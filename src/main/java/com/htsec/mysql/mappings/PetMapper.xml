@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.htsec.mysql.dao.PetMapper">
+
+	<select id="getAllPets" resultType="com.htsec.mysql.dto.Pet">
+		SELECT ID as id, NAME as name, OWNER as owner,
+		SPECIES as species,
+		SEX as sex, BIRTH as birth, DEATH as death
+		FROM Pet
+	</select>
+
+	<insert id="insertByProc" statementType="CALLABLE" parameterType="java.util.HashMap">
+	{call updateuserclickinfo(#{channelIdinput},#{versioninput},#{deviceTypeinput},#{appidinput},#{clickKeyinput},#{timestampinput},#{clickCountinput})}
+</insert>
+</mapper>
