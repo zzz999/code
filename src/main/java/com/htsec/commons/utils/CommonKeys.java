@@ -31,5 +31,15 @@ public class CommonKeys {
     public static final String YESTERDAYNEWPERCENT="yesterdaynewpercent";
     public static final String ACTIVEPERCENT="activepercent";
     public static final String YESTERDAYACTIVEPERCENT="yesterdayactivepercent";
+    public static final String ACCOUNT="account";
+    public static final String RANGE="range";
+    public static final String ASSETALLOCATION="assetAllocation";
+    public static final String OPERATION="operation";
+    public static final String STOCKSELECTION="stockSelection";
+    public static final String STABILITY="stability";
+    public static final String MARKETIMING="marketTiming";
+    public static final String RISKCONTROL="riskControl";
+
+
 
 }

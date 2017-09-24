@@ -1,6 +1,8 @@
 package com.htsec.security;
 
 
+import com.htsec.commons.utils.CodeHelper;
+import net.sf.json.JSONObject;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Base64Encoder;
 import org.bouncycastle.util.encoders.Hex;
@@ -86,7 +88,7 @@ public class AESUtil {
          *            要加密的字符串
          * @return
          */
-        public String encrypt(String content) throws UnsupportedEncodingException {
+        public synchronized String encrypt(String content) throws UnsupportedEncodingException {
             byte[] encryptedText = null;
             init(KEY.getBytes("UTF-8"));
           //  System.out.println("IV：" + new String(iv));
@@ -128,7 +130,7 @@ public class AESUtil {
       * @return
       */
 
-     public String decrypt(String encryptedData) throws UnsupportedEncodingException {
+     public  synchronized String decrypt(String encryptedData) throws UnsupportedEncodingException {
             byte[] encryptedText = null;
           init(KEY.getBytes("UTF-8"));
            // System.out.println("IV：" + new String(iv));
@@ -153,15 +155,19 @@ public class AESUtil {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        String content = "DSKFDSKFJkjdsf123123213123^&(*&@%#^@%#&^@%*^@#@^&";
+        JSONObject json = new JSONObject();
+        json.put("account","40119420");
+        json.put("range","week");
+        String content = json.toString();
         // 加密字符串
       System.out.println("加密前的：" + content);
-        System.out.println("加密密钥：" + new String(keybytes));
+       // System.out.println("加密密钥：" + new String(keybytes));
         // 加密方法
         long a =System.currentTimeMillis();
-        for (int i =0;i<10000;i++){
+        for (int i =0;i<1;i++){
             String enc = aes.encrypt(content);
             System.out.println("加密后的内容：" + enc);
+            System.out.println(CodeHelper.encode(enc));
             // 解密方法
            String dec = aes.decrypt(enc);
             System.out.println("解密后的内容：" + dec);

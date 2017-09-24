@@ -3,7 +3,22 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.htsec.mysql.dao.UserDataMapper">
 	<select id="getbyaccount" resultType="com.htsec.mysql.dto.swcompositescore">
-		SELECT biz_dt as bizDt, fundaccount as funaccount, asset_allocation as assetllocation
+		SELECT biz_dt as bizDt, fundaccount as funaccount, asset_allocation as assetllocation,operate as operate,stock_selection as stockSelection ,stability as stability,market_timing as marketTiming,risk_control as riskControl
 		FROM swcompositescore WHERE fundaccount=#{account}
+	</select>
+
+	<select id="getListByAccountAndTime" resultType="com.htsec.service.dto.UserOverview">
+		SELECT BIZ_DT as day, today_profit_rate as porfitToday, TODAY_PROFIT as profitMoney
+		FROM swfundAssetdaily WHERE FUND_ACCOUNT= #{0} and BIZ_DT &gt;= #{1} and BIZ_DT &lt;= #{2} order by BIZ_DT
+	</select>
+
+	<select id="getMasterOverviewByAccountAndTime" resultType="com.htsec.service.dto.MasterOverview">
+		SELECT biz_dt as day, profit_rate as porfitToday
+		FROM sweliteperformance WHERE biz_dt &gt;= #{0} and biz_dt &lt;= #{1} order by BIZ_DT
+	</select>
+
+	<select id="getStockInfoByAccount" resultType="com.htsec.service.dto.StockInfo">
+		SELECT SEC_NAME as stockName,PERIOD_HOLDER_DAYS as holdDays,CURRENT_BALANCE as currentState,PERIOD_PROFIT as profitMoney FROM swstockmonth
+		WHERE FUND_ACCOUNT = #{0} AND MONEY_TYPE = 0 and year_mth = #{1} order by PERIOD_PROFIT DESC
 	</select>
 </mapper>

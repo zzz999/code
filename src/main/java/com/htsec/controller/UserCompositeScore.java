@@ -3,9 +3,8 @@ package com.htsec.controller;
 import com.htsec.commons.utils.CodeHelper;
 import com.htsec.commons.utils.CommonKeys;
 import com.htsec.security.AESUtil;
-import com.htsec.service.UserAccountOverviewService;
+import com.htsec.service.UserAccountCompositeScore;
 import net.sf.json.JSONObject;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,27 +15,26 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Created by bernard on 2017/9/18.
+ * Created by bernard on 2017/9/24.
  */
+
 @Controller
-public class UserAccountOverview {
-    private static final Logger logger = Logger.getLogger(UserAccountOverview.class);
+public class UserCompositeScore {
     @Autowired
-    private UserAccountOverviewService userAccountOverviewService;
+    private UserAccountCompositeScore userAccountCompositeScore;
     private static AESUtil aes = new AESUtil();
-    @RequestMapping(value = "/overview", method = RequestMethod.GET)
+    @RequestMapping(value = "/compositeSocre", method = RequestMethod.GET)
     public void userclickDetail(HttpServletRequest request, HttpServletResponse response){
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         String requestQ= null;
         try {
-             requestQ = aes.decrypt(requestQueryString);
+            requestQ = aes.decrypt(requestQueryString);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         JSONObject requestJSON = JSONObject.fromObject(requestQ);
         requestJSON.getString(CommonKeys.ACCOUNT);
-        userAccountOverviewService.getOverview(requestJSON,response);
+        userAccountCompositeScore.getCompositeScoreByAccount(requestJSON,response);
 
     }
-
 }

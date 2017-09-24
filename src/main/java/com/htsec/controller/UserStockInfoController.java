@@ -1,9 +1,8 @@
 package com.htsec.controller;
 
 import com.htsec.commons.utils.CodeHelper;
-import com.htsec.commons.utils.CommonKeys;
 import com.htsec.security.AESUtil;
-import com.htsec.service.UserAccountOverviewService;
+import com.htsec.service.UserAccountStockInfoService;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,27 +15,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 
 /**
- * Created by bernard on 2017/9/18.
+ * Created by bernard on 2017/9/22.
  */
 @Controller
-public class UserAccountOverview {
-    private static final Logger logger = Logger.getLogger(UserAccountOverview.class);
-    @Autowired
-    private UserAccountOverviewService userAccountOverviewService;
+public class UserStockInfoController {
+    private static final Logger logger = Logger.getLogger(UserStockInfoController.class);
     private static AESUtil aes = new AESUtil();
-    @RequestMapping(value = "/overview", method = RequestMethod.GET)
-    public void userclickDetail(HttpServletRequest request, HttpServletResponse response){
+    @Autowired
+    UserAccountStockInfoService userAccountStockInfoService;
+    @RequestMapping(value = "/stockInfo", method = RequestMethod.GET)
+    public void userRegister(HttpServletRequest request, HttpServletResponse response) {
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         String requestQ= null;
         try {
-             requestQ = aes.decrypt(requestQueryString);
+            requestQ = aes.decrypt(requestQueryString);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         JSONObject requestJSON = JSONObject.fromObject(requestQ);
-        requestJSON.getString(CommonKeys.ACCOUNT);
-        userAccountOverviewService.getOverview(requestJSON,response);
-
+        userAccountStockInfoService.getAccountStockInfo(requestJSON,response);
     }
 
 }
