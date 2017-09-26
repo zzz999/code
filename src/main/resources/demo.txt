@@ -1,0 +1,41 @@
+#######机构建设规则#####################
+FHbuildCost=;   #分行建设费
+FHbuildCost=;
+ZHbuildCost;
+FHcount;
+ZHcount;
+FHRunCost;
+ZHRunCost;
+
+
+#######团队建设规则#####################
+DepositGroupBuildCost=; #存款团队招募费
+DepositGroupIncrease=;#存款新增业务量
+DepositGroupRunCost=;#存款团队工资
+LoanGroupBuildCost=; #贷款团队招募费
+LoanGroupIncrease=;#贷款新增业务量
+LoanGroupRunCost=;#贷款工资
+
+
+################渠道建设规则###########
+NetBankBuiltCost=; #网络银行建设费用
+NetBankTime=; #网络银行时间
+NetBankRunCost=;#网络银行维护费
+MobilephoneBankBuiltCost=;#手机银行建设费用
+MobilephoneBankTime=;#手机银行时间
+MobilephoneBankRunCost=;#手机银行维护费
+
+
+######存款规则#########################
+persionalDepositTime=;#个人存款年限
+companyDepositTime=;#企业存款年限
+persionalDepositAnnualReturn=;#个人存款每年归还比率
+companyDepositAnnualReturn=;#企业存款每年归还比率
+persionalRateLow=;#个人存款利率浮动下限
+persionalRateHigh=;#个人存款利率浮动上限
+companyRateHigh=;#企业存款利率浮动上限
+companyRateLow=;#企业存款利率浮动下限
+persionDepositCostMin=;#个人贷款营销费用固定值（最小值）
+companyDepositCostMin=;#企业贷款营销费用固定值（最小值）
+persionalDepositCostGap=;#个人贷款营销费用最小单位
+companyDepositCostGap=;#企业贷款营销费用最小单位
