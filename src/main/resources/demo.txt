@@ -1,6 +1,5 @@
 #######机构建设规则#####################
 FHbuildCost=;   #分行建设费
-FHbuildCost=;
 ZHbuildCost;
 FHcount;
 ZHcount;
@@ -26,7 +25,7 @@ MobilephoneBankTime=;#手机银行时间
 MobilephoneBankRunCost=;#手机银行维护费
 
 
-######存款规则#########################
+#########################存款规则#########################
 persionalDepositTime=;#个人存款年限
 companyDepositTime=;#企业存款年限
 persionalDepositAnnualReturn=;#个人存款每年归还比率
@@ -39,3 +38,15 @@ persionDepositCostMin=;#个人贷款营销费用固定值（最小值）
 companyDepositCostMin=;#企业贷款营销费用固定值（最小值）
 persionalDepositCostGap=;#个人贷款营销费用最小单位
 companyDepositCostGap=;#企业贷款营销费用最小单位
+
+
+###################贷款损失准备规则###############################
+typeA=;#A类风险准备
+typeB=;#B类风险准备
+typeC=;#C类风险准备
+
+
+
+
+
+
