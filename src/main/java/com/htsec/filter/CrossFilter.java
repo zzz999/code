@@ -1,9 +1,11 @@
 package com.htsec.filter;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -14,6 +16,8 @@ import java.io.IOException;
  * User : 011419
  * Copyright (c) 2017, goldendba@gmail.com All Right Reserved.
  */
+@Component
+@WebFilter(filterName="CrossFilter",urlPatterns="/*")
 public class CrossFilter extends OncePerRequestFilter {
 
     @Override
