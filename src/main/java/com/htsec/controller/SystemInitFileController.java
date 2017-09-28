@@ -26,6 +26,18 @@ public class SystemInitFileController {
         BufferedReader in=new BufferedReader(new InputStreamReader(file.getInputStream(),"UTF-8"));
         String line;
         while ((line = in.readLine()) != null) {
+            logger.info("readLine:"+line);
+            if (line.startsWith("#")){
+                continue;
+            }else {
+                String prop=line.split(";")[0];
+                String [] keyAndValue =prop.split("=");
+                String key = keyAndValue[0].trim();
+                String value =keyAndValue[1].trim();
+
+
+
+            }
             result +=line+"\n";
         }
        System.out.println(result);
