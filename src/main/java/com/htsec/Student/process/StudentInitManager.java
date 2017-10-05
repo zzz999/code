@@ -1,9 +1,5 @@
 package com.htsec.Student.process;
 
-import com.htsec.Student.beans.BankInfo;
-import com.htsec.Student.beans.JGInfo;
-import com.htsec.Student.beans.StudentMessage;
-import com.htsec.Student.beans.ZhInfo;
 import com.htsec.Student.init.bean.*;
 
 /**

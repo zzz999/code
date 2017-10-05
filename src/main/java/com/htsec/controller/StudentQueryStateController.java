@@ -3,7 +3,7 @@ package com.htsec.controller;
 import com.htsec.Student.beans.BankInfo;
 import com.htsec.Student.beans.JGInfo;
 import com.htsec.Student.beans.StudentMessage;
-import com.htsec.Student.beans.ZhInfo;
+import com.htsec.Student.beans.FHinfo;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -29,14 +29,14 @@ public class StudentQueryStateController {
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
         JSONObject result = new JSONObject();
         ///
-        ZhInfo zhInfo = new ZhInfo();
-        zhInfo.setDepositGroupNum("1");
-        zhInfo.setLoanGroupNum("2");
-        ZhInfo zhInfo1 = new ZhInfo();
+       /* FHinfo FHinfo = new FHinfo();
+        FHinfo.setDepositGroupNum("1");
+        FHinfo.setLoanGroupNum("2");
+        FHinfo zhInfo1 = new FHinfo();
         zhInfo1.setDepositGroupNum("1");
         zhInfo1.setLoanGroupNum("2");
-        ArrayList<ZhInfo> zhInfos = new ArrayList<>();
-        zhInfos.add(zhInfo);
+        ArrayList<FHinfo> zhInfos = new ArrayList<>();
+        zhInfos.add(FHinfo);
         zhInfos.add(zhInfo1);
 
 
@@ -69,7 +69,7 @@ public class StudentQueryStateController {
 
         result.put("bankInfo",kk);
         result.put("jgInfo",jgInfo);
-        result.put("message",messages);
+        result.put("message",messages);*/
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {

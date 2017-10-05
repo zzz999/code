@@ -6,11 +6,15 @@ import java.util.List;
  * Created by bernard on 2017/9/26.
  */
 public class BankInfo {
-    private String cash;
-    private String time;
-    private String totalLoan;
-    private String totalDeposit;
-    private List<ZhInfo> zhInfoList;
+    private String name;
+    private OrganizationInfo organizationInfo;
+    private QDInfo qdInfo;
+    private List<DepositInfo> depositInfoList;
+    private List<LoanInfo> loanInfoList;
+
+    private String cash; //现金
+    private String time; //时间
+    private List<FHinfo> zhInfoList; //支行信息
 
     public String getCash() {
         return cash;
@@ -28,27 +32,12 @@ public class BankInfo {
         this.time = time;
     }
 
-    public String getTotalLoan() {
-        return totalLoan;
-    }
 
-    public void setTotalLoan(String totalLoan) {
-        this.totalLoan = totalLoan;
-    }
-
-    public String getTotalDeposit() {
-        return totalDeposit;
-    }
-
-    public void setTotalDeposit(String totalDeposit) {
-        this.totalDeposit = totalDeposit;
-    }
-
-    public List<ZhInfo> getZhInfoList() {
+    public List<FHinfo> getZhInfoList() {
         return zhInfoList;
     }
 
-    public void setZhInfoList(List<ZhInfo> zhInfoList) {
+    public void setZhInfoList(List<FHinfo> zhInfoList) {
         this.zhInfoList = zhInfoList;
     }
 }
