@@ -4,8 +4,12 @@
     <title>文件上传下载</title>
 </head>
 <body>
-<form action="http://localhost:8080/init" method="post" enctype="multipart/form-data">
+<form action="http://localhost:8080/initRule" method="post" enctype="multipart/form-data">
     选择文件:<input type="file" name="file" width="120px">
+    <input type="submit" value="上传">
+</form>
+<form action="http://localhost:8080/initBaseRate" method="post" enctype="multipart/form-data">
+    基准利率:<input type="file" name="file" width="120px">
     <input type="submit" value="上传">
 </form>
 <hr>
