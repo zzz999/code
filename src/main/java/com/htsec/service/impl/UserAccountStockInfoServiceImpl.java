@@ -26,7 +26,11 @@ public class UserAccountStockInfoServiceImpl implements UserAccountStockInfoServ
     @Override
     public void getAccountStockInfo(JSONObject input, HttpServletResponse response) {
         logger.info("start to handle user account stockinfo service");
-       List<StockInfo> result = userDataBaseService.getStockInfoByAccount(input.getString(CommonKeys.ACCOUNT));
+       List<StockInfo> stockInfoByAccountDesc = userDataBaseService.getStockInfoByAccount(input.getString(CommonKeys.ACCOUNT));
+       List<StockInfo> stockInfoByAccountAsc =userDataBaseService.getStockInfoByAccountASC(input.getString(CommonKeys.ACCOUNT));
+       JSONObject result = new JSONObject();
+       result.put("stockInfoByAccountDesc",stockInfoByAccountDesc);
+       result.put("stockInfoByAccountAsc",stockInfoByAccountAsc);
         logger.info(result.toString());
         try {
             response.setCharacterEncoding("utf-8");

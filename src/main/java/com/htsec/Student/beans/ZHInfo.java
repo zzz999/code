@@ -28,4 +28,9 @@ public class ZHInfo {
     public void setGroupInfo(GroupInfo groupInfo) {
         this.groupInfo = groupInfo;
     }
+
+
+    public ZHInfo() {
+        this.groupInfo = new GroupInfo();
+    }
 }

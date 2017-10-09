@@ -25,6 +25,8 @@ public class UserStockInfoController {
     UserAccountStockInfoService userAccountStockInfoService;
     @RequestMapping(value = "/stockInfo", method = RequestMethod.GET)
     public void userRegister(HttpServletRequest request, HttpServletResponse response) {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         String requestQ= null;
         try {

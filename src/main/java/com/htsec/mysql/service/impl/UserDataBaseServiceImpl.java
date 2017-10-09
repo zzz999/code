@@ -5,10 +5,7 @@ import com.htsec.mysql.dao.UserDataMapper;
 import com.htsec.mysql.dto.swcompositescore;
 import com.htsec.mysql.service.UserDataBaseService;
 import com.htsec.service.cache.MasterOverViewCache;
-import com.htsec.service.dto.MasterOverview;
-import com.htsec.service.dto.OperationAnalysis;
-import com.htsec.service.dto.StockInfo;
-import com.htsec.service.dto.UserOverview;
+import com.htsec.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +45,15 @@ public class UserDataBaseServiceImpl implements UserDataBaseService{
         }
     }
 
+    @Override
+    public List<SwfundAssetmonth> getSwfundAssetMonthInfo(String account, int monthbegin, int monthend) {
+        return userDataMapper.getSwfundAssetMonthInfo(account,monthbegin,monthend);
+    }
 
+    @Override
+    public List<StockInfo> getStockInfoByAccountASC(String account) {
+        return userDataMapper.getStockInfoByAccountASC(account, Integer.parseInt(TimeUtil.getMonth()));
+    }
 
     @Override
     public List<StockInfo> getStockInfoByAccount(String account) {

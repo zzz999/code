@@ -1,10 +1,7 @@
 package com.htsec.mysql.service;
 
 import com.htsec.mysql.dto.swcompositescore;
-import com.htsec.service.dto.MasterOverview;
-import com.htsec.service.dto.OperationAnalysis;
-import com.htsec.service.dto.StockInfo;
-import com.htsec.service.dto.UserOverview;
+import com.htsec.service.dto.*;
 
 import java.util.List;
 
@@ -14,6 +11,9 @@ public interface UserDataBaseService {
     public List<MasterOverview> getMasterOverview(int starttime,int endtime);
     public List<StockInfo> getStockInfoByAccount(String account);
     public OperationAnalysis getOperationAnalysis();
+    public List<StockInfo> getStockInfoByAccountASC(String account);
+    public List<SwfundAssetmonth> getSwfundAssetMonthInfo(String account, int monthbegin, int monthend);
+
 
 
 }

@@ -6,11 +6,15 @@
 <body>
 <form action="http://localhost:8080/initRule" method="post" enctype="multipart/form-data">
     选择文件:<input type="file" name="file" width="120px">
-    <input type="submit" value="上传">
+    <input type="submit" value="上传规则">
 </form>
 <form action="http://localhost:8080/initBaseRate" method="post" enctype="multipart/form-data">
     基准利率:<input type="file" name="file" width="120px">
-    <input type="submit" value="上传">
+    <input type="submit" value="上传运营数据">
+</form>
+<form action="http://localhost:8080/initCompanyInfo" method="post" enctype="multipart/form-data">
+    基准利率:<input type="file" name="file" width="120px">
+    <input type="submit" value="上传公司数据">
 </form>
 <hr>
 <form action="http://localhost:8080/filedownload" method="get">

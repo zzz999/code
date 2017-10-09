@@ -1,35 +1,41 @@
 package com.htsec.excel;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ExcelUtil {
     public static void main(String[] args){
         // 获取Excel文件的sheet列表
         //testGetSheetList("c:/test.xlsx");
 
- /*       // 获取Excel文件的第1个sheet的内容
-        testReadExcel("c:/test.xls", 0);
+       // 获取Excel文件的第1个sheet的内容
+      // File file = new File("C:/Users/berna/Desktop/8家制造业公司6年财务报表.xls");
+       // try {
+        //   testReadExcel(new FileInputStream(file), 0);
+    //    } catch (FileNotFoundException e) {
+     //       e.printStackTrace();
+      //  }
 
         // 获取Excel文件的第2个sheet的第2、4-7行和第10行及以后的内容
-        testReadExcel("c:/test.xlsx", 1, "2,4-7,10-");
+       // testReadExcel("c:/test.xlsx", 1, "2,4-7,10-");
 
         // 获取Excel文件的第3个sheet中a,b,g,h,i,j等列的所有内容
-        testReadExcel("c:/test.xls", 2, new String[] {"a","b","g","h","i","j"});
+      //  testReadExcel("c:/test.xls", 2, new String[] {"a","b","g","h","i","j"});
 
         // 获取Excel文件的第4个sheet的第2、4-7行和第10行及以后，a,b,g,h,i,j等列的内容
-        testReadExcel("c:/test.xlsx", 3, "2,4-7,10-", new String[] {"a","b","g","h","i","j"});*/
+       // testReadExcel("c:/test.xlsx", 3, "2,4-7,10-", new String[] {"a","b","g","h","i","j"});
     }
 
     // 测试获取sheet列表
-    private static void testGetSheetList(InputStream filePath,String name) {
+    public static ArrayList<String> testGetSheetList(InputStream filePath,String name) {
         PoiExcelHelper helper = getPoiExcelHelper(filePath,name);
 
         // 获取Sheet列表
-        ArrayList<String> sheets = helper.getSheetList(filePath);
+        return  helper.getSheetList(filePath);
 
         // 打印Excel的Sheet列表
-        printList(name, sheets);
+       // printList(name, sheets);
     }
 
     // 测试Excel读取
@@ -111,9 +117,9 @@ public class ExcelUtil {
     }
 
     // 打印单元格数据
-    private static void printBody(ArrayList<ArrayList<String>> dataList) {
+    public static void printBody(List<ArrayList<String>> dataList) {
         int index = 0;
-        for(ArrayList<String> data : dataList) {
+        for(List<String> data : dataList) {
             index ++;
             System.out.println();
             System.out.print(index);
