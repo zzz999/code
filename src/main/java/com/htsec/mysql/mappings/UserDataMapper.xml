@@ -21,4 +21,18 @@
 		SELECT SEC_NAME as stockName,PERIOD_HOLDER_DAYS as holdDays,CURRENT_BALANCE as currentState,PERIOD_PROFIT as profitMoney FROM swstockmonth
 		WHERE FUND_ACCOUNT = #{0} AND MONEY_TYPE = 0 and year_mth = #{1} order by PERIOD_PROFIT DESC
 	</select>
+
+	<select id="getStockInfoByAccountASC" resultType="com.htsec.service.dto.StockInfo">
+		SELECT SEC_NAME as stockName,PERIOD_HOLDER_DAYS as holdDays,CURRENT_BALANCE as currentState,PERIOD_PROFIT as profitMoney FROM swstockmonth
+		WHERE FUND_ACCOUNT = #{0} AND MONEY_TYPE = 0 and year_mth = #{1} order by PERIOD_PROFIT ASC
+	</select>
+
+	<select id="getSwfundAssetMonthInfo" resultType="com.htsec.service.dto.SwfundAssetmonth">
+		SELECT year_mth AS yearMth,profit_rate_byday AS profitRateByday,holder_rate_byday AS holderRateByday,profit_byday AS profitByday,PERIOD_PROFIT AS periodProfit,begin_total_asset AS beginTotalAsset,end_total_asset AS endTotalAsset,period_in_balance AS periodInBalance,period_out_balance AS periodOutBalance,factor_profit AS factorProfit,
+		risk_exp AS riskExp, alpha AS alpha, stock_selection AS stockSelection,beta1 AS beta1, beta2 AS beta2, market_timing AS marketTiming,trade_success_rate AS tradeSuccessRate,trading_times AS tradingTimes,PROFIT_SEC_COUNT AS profitSecCount,industry_profit AS industryProfit,invest_style AS investStyle,risk_control AS riskControl,
+		calmar_ratio AS calmarRatio, sortino_ratio AS sortinoRatio,sharpe_ratio AS sharpeRatio,asset_allocation AS assetAllocation,operate as operate,stability AS stability
+		FROM swfundAssetMonth WHERE FUND_ACCOUNT= #{0} AND  year_mth &gt;= #{1} and year_mth &lt;= #{2} order by year_mth
+
+	</select>
+
 </mapper>

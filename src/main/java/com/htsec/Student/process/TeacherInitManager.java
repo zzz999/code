@@ -2,6 +2,9 @@ package com.htsec.Student.process;
 
 import com.htsec.Student.init.bean.*;
 
+import java.util.HashMap;
+import java.util.List;
+
 public class TeacherInitManager {
     private static BaseRate baseRate;
     private static QYLongOrder qyLongOrder;
@@ -12,6 +15,8 @@ public class TeacherInitManager {
     private static CarLoan carLoan;
     private static OtherLoan otherLoan;
     private static ContryDeposit contryDeposit;
+    private static HashMap<String ,CompanyInfo> companyInfoHashMap = new HashMap<>();
+    private static List<String> companyNames;
 
     public static BaseRate getBaseRate() {
         return baseRate;
@@ -83,5 +88,21 @@ public class TeacherInitManager {
 
     public static void setContryDeposit(ContryDeposit contryDeposit) {
         TeacherInitManager.contryDeposit = contryDeposit;
+    }
+
+    public static HashMap<String, CompanyInfo> getCompanyInfoHashMap() {
+        return companyInfoHashMap;
+    }
+
+    public static void setCompanyInfoHashMap(HashMap<String, CompanyInfo> companyInfoHashMap) {
+        TeacherInitManager.companyInfoHashMap = companyInfoHashMap;
+    }
+
+    public static List<String> getCompanyNames() {
+        return companyNames;
+    }
+
+    public static void setCompanyNames(List<String> companyNames) {
+        TeacherInitManager.companyNames = companyNames;
     }
 }

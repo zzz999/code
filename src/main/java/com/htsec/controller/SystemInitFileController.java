@@ -26,6 +26,32 @@ import java.util.ArrayList;
 public class SystemInitFileController {
     private static final Logger logger = Logger.getLogger(SystemInitFileController.class);
 
+
+    @RequestMapping(value="/initCompanyInfo",method = RequestMethod.POST)
+    public void initCompanyInfo(MultipartFile file, HttpServletRequest request,HttpServletResponse response) throws IOException{
+       ArrayList<String> timeList = ExcelUtil.testGetSheetList(file.getInputStream(),file.getName());
+       for(int i =0;i<timeList.size();i++){
+           CompanyInfo companyInfo = new CompanyInfo();
+           ArrayList<ArrayList<String>> companyInfoList=ExcelUtil.testReadExcel(file.getInputStream(), i,file.getName());
+           companyInfo.setZHFYtable(companyInfoList.subList(1,13));
+         //  ExcelUtil.printBody(companyInfoList.subList(1,12));
+           companyInfo.setLRtable(companyInfoList.subList(15,27));
+          companyInfo.setZCFZtable(companyInfoList.subList(29,50));
+          TeacherInitManager.getCompanyInfoHashMap().put(timeList.get(i),companyInfo);
+          TeacherInitManager.setCompanyNames(companyInfo.getLRtable().get(0).subList(1,(companyInfo.getLRtable().get(0).size())));
+
+
+           /*ExcelUtil.printBody(companyInfo.getLRtable());
+           ExcelUtil.printBody(companyInfo.getZCFZtable());
+           ExcelUtil.printBody(companyInfo.getZHFYtable());*/
+       }
+       JSONObject result = new JSONObject();
+       result.put("result","ok");
+       response.getWriter().write(result.toString());
+        //for(int)
+        //ArrayList<ArrayList<String>> loanLostPrepareRuleInfo=ExcelUtil.testReadExcel(file.getInputStream(), 5,file.getName());//贷款损失准备
+    }
+
     @RequestMapping(value= "/initBaseRate",method= RequestMethod.POST)
     public void init(MultipartFile file, HttpServletRequest request,HttpServletResponse response) throws IOException {
         //String path = request.getSession().getServletContext().getRealPath("upload");
@@ -92,7 +118,6 @@ public class SystemInitFileController {
         JSONObject result = new JSONObject();
         result.put("result","ok");
         response.getWriter().write(result.toString());
-
 
     }
 

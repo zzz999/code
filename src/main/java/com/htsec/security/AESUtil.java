@@ -156,8 +156,8 @@ public class AESUtil {
             e.printStackTrace();
         }
         JSONObject json = new JSONObject();
-        json.put("account","40119420");
-        json.put("range","week");
+        json.put("account","2870003407");
+        json.put("range","month");
         String content = json.toString();
         // 加密字符串
       System.out.println("加密前的：" + content);
