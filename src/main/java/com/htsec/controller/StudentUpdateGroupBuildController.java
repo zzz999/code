@@ -73,7 +73,11 @@ public class StudentUpdateGroupBuildController {
             }
             result.put("groupInfo",jsonArray);
             result.put("result","true");
-
+            try {
+                response.getWriter().write(result.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }
