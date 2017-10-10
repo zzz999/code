@@ -30,6 +30,13 @@ public class FHinfo {
         return zhInfoList;
     }
 
+    public FHinfo (){
+        this.FHname ="1";
+        this.setFHbuildTime("");
+        //this.zh
+
+    }
+
     public void setZhInfoList(List<ZHInfo> zhInfoList) {
         this.zhInfoList = zhInfoList;
     }

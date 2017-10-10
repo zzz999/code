@@ -1,5 +1,9 @@
 package com.htsec.controller;
 
+import com.htsec.Student.init.bean.BaseRate;
+import com.htsec.Student.init.bean.PersonalDeposit;
+import com.htsec.Student.init.bean.PersonalDepositBean;
+import com.htsec.Student.process.TeacherInitManager;
 import com.htsec.commons.utils.CodeHelper;
 import com.htsec.commons.utils.CommonKeys;
 import net.sf.json.JSONObject;
@@ -13,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 /**
  * Created by bernard on 2017/9/25.
@@ -22,14 +27,21 @@ public class StudentQueryYHLLController {
     private static final Logger logger = Logger.getLogger(StudentQueryYHLLController.class);
     @RequestMapping(value = "/queryYYLL", method = RequestMethod.GET)
     public void queryYYLL(HttpServletRequest request, HttpServletResponse response){
-        String requestQueryString = request.getQueryString();
-        JSONObject requestJson = JSONObject.fromObject(requestQueryString);
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        JSONObject queryObj = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
         JSONObject result = new JSONObject();
-        try {
-            response.getWriter().write(result.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
+        String time =queryObj.getString("time");
+        BaseRate baseRate=TeacherInitManager.getBaseRate();
+        PersonalDeposit personalDeposit =TeacherInitManager.getPersonalDeposit();
+        for(PersonalDepositBean personalDepositBean:personalDeposit.getPersonalDepositBeanList()){
+
         }
+        result.put("baseRate",baseRate.getHashMap().get(time));
+        //result.put(,);
+
+
+
 
     }
 

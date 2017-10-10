@@ -2,6 +2,7 @@ package com.htsec.Student.beans;
 
 import org.jcodings.util.Hash;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,8 +22,11 @@ public class BankInfo {
     private HashMap<String,String> companyEvaluateInfo;  //公司评级
 
 
+
     public BankInfo() {
         this.companyEvaluateInfo = new HashMap<String,String>();
+        this.zhInfoList = new ArrayList<>();
+        this.zhInfoList.add(new FHinfo());
     }
 
     public String getCash() {

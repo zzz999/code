@@ -40,8 +40,9 @@ public class StudentUpdateZHJSController {
         }else {
           List<FHinfo> bankInfoZhInfoList= bankInfo.getZhInfoList();
           if(bankInfoZhInfoList==null|| bankInfoZhInfoList.size()==0){
-              result.put("result","false");
-              result.put("info","请先建设分行");
+              //bankInfo.setZhInfoList();
+              /*result.put("result","false");
+              result.put("info","请先建设分行");*/
           }else {
                 FHinfo fHinfo =bankInfoZhInfoList.get(0);
                 List<ZHInfo> zhInfoList =fHinfo.getZhInfoList();
