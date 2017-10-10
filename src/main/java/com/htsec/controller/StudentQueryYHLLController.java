@@ -35,7 +35,7 @@ public class StudentQueryYHLLController {
         BaseRate baseRate=TeacherInitManager.getBaseRate();
         PersonalDeposit personalDeposit =TeacherInitManager.getPersonalDeposit();
         for(PersonalDepositBean personalDepositBean:personalDeposit.getPersonalDepositBeanList()){
-
+//
         }
         result.put("baseRate",baseRate.getHashMap().get(time));
         //result.put(,);

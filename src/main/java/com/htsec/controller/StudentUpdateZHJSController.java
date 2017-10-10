@@ -43,6 +43,8 @@ public class StudentUpdateZHJSController {
               //bankInfo.setZhInfoList();
               /*result.put("result","false");
               result.put("info","请先建设分行");*/
+              //
+
           }else {
                 FHinfo fHinfo =bankInfoZhInfoList.get(0);
                 List<ZHInfo> zhInfoList =fHinfo.getZhInfoList();
