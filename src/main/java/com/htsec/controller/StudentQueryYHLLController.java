@@ -34,13 +34,16 @@ public class StudentQueryYHLLController {
         String time =queryObj.getString("time");
         BaseRate baseRate=TeacherInitManager.getBaseRate();
         PersonalDeposit personalDeposit =TeacherInitManager.getPersonalDeposit();
-        for(PersonalDepositBean personalDepositBean:personalDeposit.getPersonalDepositBeanList()){
+/*        for(PersonalDepositBean personalDepositBean:personalDeposit.getPersonalDepositBeanList()){
 //
-        }
+        }*/
         result.put("baseRate",baseRate.getHashMap().get(time));
         //result.put(,);
-
-
+        try {
+            response.getWriter().write(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
     }
