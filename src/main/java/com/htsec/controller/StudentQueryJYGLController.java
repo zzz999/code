@@ -28,10 +28,10 @@ public class StudentQueryJYGLController {
         result.put("organizationBuildRule",StudentInitManager.getOrgBuildRule());
         result.put("marketBuildRule", StudentInitManager.getMarketingBuildRule());
         //StudentInitManager.getDepositRule();
-       // StudentInitManager.getLoanLostPrepareRule();
+        // StudentInitManager.getLoanLostPrepareRule();
         //StudentInitManager.getLoanRule();
-       // StudentInitManager.getOrgBuildRule();
-       // StudentInitManager.getMarketingBuildRule();
+        // StudentInitManager.getOrgBuildRule();
+        // StudentInitManager.getMarketingBuildRule();
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {
