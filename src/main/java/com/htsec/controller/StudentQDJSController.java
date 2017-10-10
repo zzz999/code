@@ -70,6 +70,11 @@ public class StudentQDJSController {
             }
             result.put("qdInfo",bankInfo.getQdInfo());
         }
-
+        try {
+            response.getWriter().write(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return;
     }
 }
