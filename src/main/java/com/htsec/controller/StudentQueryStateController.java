@@ -4,6 +4,8 @@ import com.htsec.Student.beans.BankInfo;
 import com.htsec.Student.beans.JGInfo;
 import com.htsec.Student.beans.StudentMessage;
 import com.htsec.Student.beans.FHinfo;
+import com.htsec.Student.process.MessageManager;
+import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -25,8 +27,8 @@ public class StudentQueryStateController {
     public void queryYYLL(HttpServletRequest request, HttpServletResponse response){
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        String requestQueryString = request.getQueryString();
-        JSONObject requestJson = JSONObject.fromObject(requestQueryString);
+        JSONObject queryObj = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
+        String code =queryObj.getString("code");
         JSONObject result = new JSONObject();
         ///
        /* FHinfo FHinfo = new FHinfo();
@@ -70,6 +72,7 @@ public class StudentQueryStateController {
         result.put("bankInfo",kk);
         result.put("jgInfo",jgInfo);
         result.put("message",messages);*/
+        result.put("message", MessageManager.findByCode(code));
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {

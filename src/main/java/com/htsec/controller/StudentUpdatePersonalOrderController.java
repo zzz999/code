@@ -90,7 +90,7 @@ public class StudentUpdatePersonalOrderController {
             order.setName(StudentProcessManager.getBankInfoHashMap().get(code).getName());
             StudentOrderManager.getPersonalLoanOrderMap().get(time).put(code,order);
         }
-        result.put("result","false");
+        result.put("result","true");
         response.getWriter().write(result.toString());
         return;
 

@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class StudentLoginController {
@@ -71,6 +74,31 @@ public class StudentLoginController {
             }
             result.put("codes",arrayList);
         }
+
+        try {
+            response.getWriter().write(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @RequestMapping(value = "/queryStudents", method = RequestMethod.GET)
+    public void queryStudents(HttpServletRequest request, HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        JSONObject result = new JSONObject();
+        List<Map> arrayList = new ArrayList<>();
+        HashMap<String, BankInfo> bankInfoHashMap=StudentProcessManager.getBankInfoHashMap();
+        for(String key:bankInfoHashMap.keySet()){
+            if(bankInfoHashMap.get(key).getName()==null) continue;
+            Map<String,String> fields=new HashMap<>();
+            fields.put("code",key);
+            fields.put("name",bankInfoHashMap.get(key).getName());
+            arrayList.add(fields);
+        }
+        result.put("list",arrayList);
 
         try {
             response.getWriter().write(result.toString());
