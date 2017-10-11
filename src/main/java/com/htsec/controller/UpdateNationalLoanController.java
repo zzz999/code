@@ -32,13 +32,15 @@ public class UpdateNationalLoanController {
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
         String code =requestJson.getString("code");
         String money =requestJson.getString("money");
+        String time=requestJson.getString("time");
         BankLoanForm blf=new BankLoanForm();
         blf.setLoanCode(code);
         blf.setMoney(money);
         blf.setType("2");
+        blf.setStartTime(time);
         BankLoanManager.getNationalLoanList().add(blf);
         JSONObject result = new JSONObject();
-        result.put("result","ok");
+        result.put("result","true");
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {

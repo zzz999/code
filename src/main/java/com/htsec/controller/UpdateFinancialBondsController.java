@@ -1,7 +1,11 @@
 package com.htsec.controller;
 
+import com.htsec.Student.beans.BankInfo;
 import com.htsec.Student.beans.BankLoanForm;
+import com.htsec.Student.beans.StudentMessage;
 import com.htsec.Student.process.BankLoanManager;
+import com.htsec.Student.process.MessageManager;
+import com.htsec.Student.process.StudentProcessManager;
 import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -30,14 +34,28 @@ public class UpdateFinancialBondsController {
         String code =requestJson.getString("code");
         String money =requestJson.getString("money");
         String rate =requestJson.getString("rate");
+        String time =requestJson.getString("time");
         BankLoanForm blf=new BankLoanForm();
         blf.setLoanCode(code);
+        blf.setStartTime(time);
         blf.setMoney(money);
         blf.setRate(rate);
         blf.setType("3");
         BankLoanManager.getFinancialBondsList().add(blf);
+        BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
         JSONObject result = new JSONObject();
-        result.put("result","ok");
+        if(bankInfo==null){
+            result.put("result","false");
+            try {
+                response.getWriter().write(result.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        StudentMessage sm=new StudentMessage(code,"","3",bankInfo.getName()+"：申请金融债额度为"+money+"，利率为"+rate+"%",blf.getId());
+        MessageManager.getList().add(sm);
+        result.put("result","true");
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {
@@ -58,9 +76,22 @@ public class UpdateFinancialBondsController {
         if(blf==null){
             result.put("result","false");
         }else{
+            BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
+            BankInfo loanBankInfo= StudentProcessManager.getBankInfoHashMap().get(blf.getLoanCode());
+            if(bankInfo==null){
+                result.put("result","false");
+                try {
+                    response.getWriter().write(result.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return;
+            }
             blf.setBuyCode(code);
             blf.setAudit(true);
-            result.put("result","ok");
+            StudentMessage sm=new StudentMessage(blf.getLoanCode(),blf.getBuyCode(),"1",bankInfo.getName()+"买入"+loanBankInfo.getName()+"申请的金融债，额度为"+blf.getMoney()+"，利率为"+blf.getRate()+"%",blf.getId());
+            MessageManager.getList().add(sm);
+            result.put("result","true");
         }
         try {
             response.getWriter().write(result.toString());

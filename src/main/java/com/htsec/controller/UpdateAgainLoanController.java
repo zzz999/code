@@ -37,7 +37,7 @@ public class UpdateAgainLoanController {
         blf.setMoney(money);
         blf.setType("1");
         BankLoanManager.getAgainLoanList().add(blf);
-        result.put("result","ok");
+        result.put("result","true");
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {
@@ -58,7 +58,7 @@ public class UpdateAgainLoanController {
         BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getAgainLoanList(),id);
         blf.setAudit(true);
         //JSONObject result = new JSONObject();
-        //result.put("result","ok");
+        result.put("result","true");
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {

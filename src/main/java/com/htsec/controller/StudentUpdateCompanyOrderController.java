@@ -61,7 +61,7 @@ public class StudentUpdateCompanyOrderController {
         StudentOrderManager.getCompanLoanOrderMap().get(time).put(code,companyLoanOrder);
 
         //StudentOrderManager.getCompanLoanOrderMap().get(time)
-        result.put("result","false");
+        result.put("result","true");
         response.getWriter().write(result.toString());
         return;
 
