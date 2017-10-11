@@ -7,6 +7,7 @@ public class TXOrderBean {
     private String orderMoney;
     private String TXtime;
     private String ZQ;
+    private String rate;
 
     public String getNum() {
         return num;
@@ -50,6 +51,14 @@ public class TXOrderBean {
 
     public String getZQ() {
         return ZQ;
+    }
+
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
     }
 
     public void setZQ(String ZQ) {

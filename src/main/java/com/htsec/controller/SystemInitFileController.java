@@ -405,6 +405,9 @@ private void initMarketingBuildRule(MultipartFile file) throws  IOException{
                 if(col ==5){
                     txOrderBean.setZQ(cell.trim());
                 }
+                if(col==6){
+                    txOrderBean.setRate(cell.trim());
+                }
                 col++;
             }
             if(TeacherInitManager.getTxOrder()==null){
