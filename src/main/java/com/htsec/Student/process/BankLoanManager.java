@@ -17,24 +17,15 @@ public class BankLoanManager {
     private static List<BankLoanForm> interBankBorrowingList=new ArrayList<>();
     //金融债管理
     private static List<BankLoanForm> financialBondsList=new ArrayList<>();
-    //历史记录
-    private static List<BankLoanForm> historyList=new ArrayList<>();
-
     public static BankLoanForm findByIdAndRemove(List<BankLoanForm> list,String id){
         for(BankLoanForm blf:list){
             if(blf.getId().equals(id)){
-                historyList.add(blf);
                 list.remove(blf);
                 return blf;
             }
         }
         return null ;
     };
-    public static String calcMoney(){
-        String money="0.00";
-        return money;
-    }
-
     public static List<BankLoanForm> getAgainLoanList() {
         return againLoanList;
     }

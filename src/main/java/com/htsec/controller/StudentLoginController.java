@@ -1,6 +1,8 @@
 package com.htsec.controller;
 
 import com.htsec.Student.beans.BankInfo;
+import com.htsec.Student.beans.StudentMessage;
+import com.htsec.Student.process.MessageManager;
 import com.htsec.Student.process.StudentProcessManager;
 import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSONObject;
@@ -108,5 +110,36 @@ public class StudentLoginController {
 
 
     }
+    @RequestMapping(value = "/sendMessage", method = RequestMethod.GET)
+    public void sendMessage(HttpServletRequest request, HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        JSONObject result = new JSONObject();
+        String requestQueryString = CodeHelper.decode(request.getQueryString());
+        JSONObject requestJson = JSONObject.fromObject(requestQueryString);
+        String code =requestJson.getString("code");
+        String sendCode =requestJson.getString("sendCode");
+        String text =requestJson.getString("text");
+        BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
+        if(bankInfo==null){
+            result.put("result","false");
+            try {
+                response.getWriter().write(result.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        StudentMessage sm=new StudentMessage(code,sendCode,"1",bankInfo.getName()+"："+text,null);
+        MessageManager.getList().add(sm);
+        result.put("result","true");
 
+        try {
+            response.getWriter().write(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

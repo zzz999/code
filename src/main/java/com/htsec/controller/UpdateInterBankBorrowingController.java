@@ -35,7 +35,6 @@ public class UpdateInterBankBorrowingController {
         String buyCode =requestJson.getString("buyCode");
         String money =requestJson.getString("money");
         String time =requestJson.getString("time");
-        String year =requestJson.getString("year");
         String rate =requestJson.getString("rate");
         BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
         JSONObject result = new JSONObject();
@@ -55,9 +54,9 @@ public class UpdateInterBankBorrowingController {
         blf.setRate(rate);
         blf.setType("4");
         blf.setStartTime(time);
-        blf.setEndTime(Integer.parseInt(year)+Integer.parseInt(time)+"");
+        blf.setEndTime(1+Integer.parseInt(time)+"");
         BankLoanManager.getInterBankBorrowingList().add(blf);
-        StudentMessage sm=new StudentMessage(code,buyCode,"4",bankInfo.getName()+"：请求同业拆借额度为"+money+"，利率为"+rate+"%，时间为"+year+"年",blf.getId());
+        StudentMessage sm=new StudentMessage(code,buyCode,"4",bankInfo.getName()+"：请求同业拆借额度为"+money+"，利率为"+rate+"%，时间为1年",blf.getId());
         MessageManager.getList().add(sm);
 
         result.put("result","true");
@@ -94,7 +93,9 @@ public class UpdateInterBankBorrowingController {
             }
             blf.setBuyCode(code);
             blf.setAudit(true);
-            StudentMessage sm=new StudentMessage(blf.getLoanCode(),blf.getBuyCode(),"1",bankInfo.getName()+"买入"+loanBankInfo.getName()+"出售的同业拆借，额度为"+blf.getMoney()+"，利率为"+blf.getRate()+"%，时间为"+(Integer.parseInt(blf.getEndTime())-Integer.parseInt(blf.getStartTime()))+"年",blf.getId());
+            bankInfo.getInterBankBorrowingList().add(blf);
+            loanBankInfo.getInterBankBorrowingList().add(blf);
+            StudentMessage sm=new StudentMessage(blf.getLoanCode(),blf.getBuyCode(),"1",bankInfo.getName()+"：买入"+loanBankInfo.getName()+"出售的同业拆借，额度为"+blf.getMoney()+"，利率为"+blf.getRate()+"%，时间为"+(Integer.parseInt(blf.getEndTime())-Integer.parseInt(blf.getStartTime()))+"年",blf.getId());
             MessageManager.getList().add(sm);
             result.put("result","true");
         }
@@ -103,27 +104,5 @@ public class UpdateInterBankBorrowingController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    @RequestMapping(value = "/queryBankList", method = RequestMethod.GET)
-    public void queryBankList(HttpServletRequest request, HttpServletResponse response){
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json");
-        String requestQueryString = CodeHelper.decode(request.getQueryString());
-        // String requestQueryString = request.getQueryString();
-        JSONObject requestJson = JSONObject.fromObject(requestQueryString);
-        String code =requestJson.getString("code");
-        //贷款银行的code
-        String loanCode =requestJson.getString("loanCode");
-        String money =requestJson.getString("money");
-        String year =requestJson.getString("year");
-        String rate =requestJson.getString("rate");
-        JSONObject result = new JSONObject();
-        result.put("result","ok");
-        try {
-            response.getWriter().write(result.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
     }
 }

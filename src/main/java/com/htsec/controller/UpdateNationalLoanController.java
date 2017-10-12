@@ -61,6 +61,7 @@ public class UpdateNationalLoanController {
         JSONObject result = new JSONObject();
         BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getNationalLoanList(),id);
         blf.setAudit(true);
+        bankInfo.getNationalLoanList().add(blf);
         result.put("result","ok");
         try {
             response.getWriter().write(result.toString());

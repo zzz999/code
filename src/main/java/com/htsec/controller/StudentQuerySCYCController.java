@@ -29,7 +29,6 @@ public class StudentQuerySCYCController {
     public void queryYYLL(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        JSONObject queryObj = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
         JSONObject result = new JSONObject();
        // String time =queryObj.getString("time");
         BaseRate baseRate =TeacherInitManager.getBaseRate();
@@ -105,7 +104,7 @@ public class StudentQuerySCYCController {
         }
         OrderPerdictInfo orderPerdictInfo = new OrderPerdictInfo();
         orderPerdictInfo.setAvgMoney(money.toString());
-        orderPerdictInfo.setAvgRate(rate.divide(new BigDecimal(txOrderBeans.size())).toString());
+        orderPerdictInfo.setAvgRate(rate.divide(new BigDecimal(txOrderBeans.size()),4).toString());
         return orderPerdictInfo;
     }
 
@@ -119,7 +118,7 @@ public class StudentQuerySCYCController {
         }
         OrderPerdictInfo orderPerdictInfo = new OrderPerdictInfo();
         orderPerdictInfo.setAvgMoney(money.toString());
-        orderPerdictInfo.setAvgRate(rate.divide(new BigDecimal(qyLongOrderList.size())).toString());
+        orderPerdictInfo.setAvgRate(rate.divide(new BigDecimal(qyLongOrderList.size()),4).toString());
         return orderPerdictInfo;
     }
 
@@ -133,7 +132,7 @@ public class StudentQuerySCYCController {
         }
         OrderPerdictInfo orderPerdictInfo = new OrderPerdictInfo();
         orderPerdictInfo.setAvgMoney(money.toString());
-        orderPerdictInfo.setAvgRate(rate.divide(new BigDecimal(qyLongOrderList.size())).toString());
+        orderPerdictInfo.setAvgRate(rate.divide(new BigDecimal(qyLongOrderList.size()),4).toString());
         return orderPerdictInfo;
     }
 

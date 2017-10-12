@@ -57,6 +57,7 @@ public class UpdateAgainLoanController {
         JSONObject result = new JSONObject();
         BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getAgainLoanList(),id);
         blf.setAudit(true);
+        bankInfo.getAgainLoanList().add(blf);
         //JSONObject result = new JSONObject();
         result.put("result","true");
         try {

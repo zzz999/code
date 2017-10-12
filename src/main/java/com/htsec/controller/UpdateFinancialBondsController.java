@@ -89,7 +89,9 @@ public class UpdateFinancialBondsController {
             }
             blf.setBuyCode(code);
             blf.setAudit(true);
-            StudentMessage sm=new StudentMessage(blf.getLoanCode(),blf.getBuyCode(),"1",bankInfo.getName()+"买入"+loanBankInfo.getName()+"申请的金融债，额度为"+blf.getMoney()+"，利率为"+blf.getRate()+"%",blf.getId());
+            bankInfo.getFinancialBondsList().add(blf);
+            loanBankInfo.getFinancialBondsList().add(blf);
+            StudentMessage sm=new StudentMessage(blf.getLoanCode(),blf.getBuyCode(),"1",bankInfo.getName()+"：买入"+loanBankInfo.getName()+"申请的金融债，额度为"+blf.getMoney()+"，利率为"+blf.getRate()+"%",blf.getId());
             MessageManager.getList().add(sm);
             result.put("result","true");
         }
