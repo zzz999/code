@@ -68,6 +68,8 @@ public class StudentLoginController {
             for(int i=0;i<oldSize;i++){
                 BankInfo bankInfo = new BankInfo();
                 String code = Math.abs((System.currentTimeMillis()+"bank"+i).hashCode())+"";
+                bankInfo.setName("银行"+(i+1));
+                bankInfo.setCash("50000000");
                 StudentProcessManager.getBankInfoHashMap().put(code,bankInfo);
             }
             ArrayList<String> arrayList = new ArrayList<>();

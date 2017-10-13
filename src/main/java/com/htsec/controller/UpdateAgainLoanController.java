@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 /**
  * Created by bernard on 2017/9/26.
@@ -53,13 +54,32 @@ public class UpdateAgainLoanController {
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
         String code =requestJson.getString("code");
         String id =requestJson.getString("id");
+        String audit =requestJson.getString("audit");
         BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
         JSONObject result = new JSONObject();
         BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getAgainLoanList(),id);
-        blf.setAudit(true);
-        bankInfo.getAgainLoanList().add(blf);
+        //通过
+        if(audit.equals("0")){
+            blf.setAudit(true);
+            BigDecimal cash = new BigDecimal(bankInfo.getCash()==null?"0":bankInfo.getCash()).add(new BigDecimal(blf.getMoney())).setScale(2,BigDecimal.ROUND_HALF_UP);
+            bankInfo.setCash(cash.toString());
+            bankInfo.getAgainLoanList().add(blf);
+        }
+
         //JSONObject result = new JSONObject();
         result.put("result","true");
+        try {
+            response.getWriter().write(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @RequestMapping(value = "/queryAgainLoan", method = RequestMethod.GET)
+    public void queryAgainLoan(HttpServletRequest request, HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        JSONObject result = new JSONObject();
+        result.put("list",BankLoanManager.getAgainLoanList());
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {

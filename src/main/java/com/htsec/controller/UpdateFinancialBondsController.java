@@ -53,6 +53,7 @@ public class UpdateFinancialBondsController {
             }
             return;
         }
+        bankInfo.getFinancialBondsList().add(blf);
         StudentMessage sm=new StudentMessage(code,"","3",bankInfo.getName()+"：申请金融债额度为"+money+"，利率为"+rate+"%",blf.getId());
         MessageManager.getList().add(sm);
         result.put("result","true");
@@ -71,7 +72,7 @@ public class UpdateFinancialBondsController {
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
         String code =requestJson.getString("code");
         String id =requestJson.getString("id");
-        BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getFinancialBondsList(),id);
+        BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getFinancialBondsList(),id).clone();
         JSONObject result = new JSONObject();
         if(blf==null){
             result.put("result","false");

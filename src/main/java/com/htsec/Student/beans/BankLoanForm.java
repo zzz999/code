@@ -23,6 +23,19 @@ public class BankLoanForm {
     private String rate;
     private String startTime;
     private String endTime;
+    public BankLoanForm clone(){
+        BankLoanForm blf=new BankLoanForm();
+        blf.setId(this.id);
+        blf.setLoanCode(this.loanCode);
+        blf.setBuyCode(this.buyCode);
+        blf.setType(this.type);
+        blf.setAudit(this.audit);
+        blf.setMoney(this.money);
+        blf.setRate(this.rate);
+        blf.setStartTime(this.startTime);
+        blf.setEndTime(this.endTime);
+        return blf;
+    }
 
     public String getLoanCode() {
         return loanCode;

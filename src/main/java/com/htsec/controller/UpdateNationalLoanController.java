@@ -14,6 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * 国债
@@ -38,6 +43,7 @@ public class UpdateNationalLoanController {
         blf.setMoney(money);
         blf.setType("2");
         blf.setStartTime(time);
+        blf.setEndTime(Integer.parseInt(time)+4+"");
         BankLoanManager.getNationalLoanList().add(blf);
         JSONObject result = new JSONObject();
         result.put("result","true");
@@ -55,13 +61,33 @@ public class UpdateNationalLoanController {
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         // String requestQueryString = request.getQueryString();
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
-        String code =requestJson.getString("code");
-        String id =requestJson.getString("id");
-        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
+        BigDecimal count=new BigDecimal(requestJson.getString("money"));
+        List<BankLoanForm> list= BankLoanManager.getNationalLoanList();
+        Collections.sort(list,new Comparator<BankLoanForm>(){
+            public int compare(BankLoanForm arg0, BankLoanForm arg1) {
+                return new BigDecimal(arg0.getMoney()).compareTo(new BigDecimal(arg1.getMoney()));
+            }
+        });
+        BigDecimal sum=new BigDecimal(0);
+        for(int i=0;i<list.size();i++){
+            BankLoanForm blf=list.get(i);
+            BigDecimal sumTemp=sum.add(new BigDecimal(blf.getMoney()));
+            BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(blf.getLoanCode());
+            blf.setAudit(true);
+            if(sumTemp.compareTo(count)==1){
+                blf.setMoney(count.subtract(sum).toString());
+                bankInfo.getNationalLoanList().add(blf);
+                break;
+            }else{
+                bankInfo.getNationalLoanList().add(blf);
+                if(sumTemp.compareTo(count)==0)break;
+                sum=sumTemp;
+            }
+        }
+        BankLoanManager.setNationalLoanList(new ArrayList<>());
+
+
         JSONObject result = new JSONObject();
-        BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getNationalLoanList(),id);
-        blf.setAudit(true);
-        bankInfo.getNationalLoanList().add(blf);
         result.put("result","ok");
         try {
             response.getWriter().write(result.toString());

@@ -26,6 +26,14 @@ public class BankLoanManager {
         }
         return null ;
     };
+    public static BankLoanForm findById(List<BankLoanForm> list,String id){
+        for(BankLoanForm blf:list){
+            if(blf.getId().equals(id)){
+                return blf;
+            }
+        }
+        return null ;
+    };
     public static List<BankLoanForm> getAgainLoanList() {
         return againLoanList;
     }
