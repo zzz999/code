@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 /**
  * Created by bernard on 2017/9/26.
@@ -25,7 +26,7 @@ public class UpdateInterBankBorrowingController {
     private static final Logger logger = Logger.getLogger(UpdateInterBankBorrowingController.class);
 
     @RequestMapping(value = "/updateInterBankBorrowing", method = RequestMethod.GET)
-    public void updateInterBankBorrowing(HttpServletRequest request, HttpServletResponse response){
+    public void updateInterBankBorrowing(HttpServletRequest request, HttpServletResponse response) throws IOException{
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
@@ -40,11 +41,7 @@ public class UpdateInterBankBorrowingController {
         JSONObject result = new JSONObject();
         if(bankInfo==null){
             result.put("result","false");
-            try {
-                response.getWriter().write(result.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            response.getWriter().write(result.toString());
             return;
         }
         BankLoanForm blf=new BankLoanForm();
@@ -54,20 +51,16 @@ public class UpdateInterBankBorrowingController {
         blf.setRate(rate);
         blf.setType("4");
         blf.setStartTime(time);
-        blf.setEndTime(1+Integer.parseInt(time)+"");
+        blf.setEndTime((1+Integer.parseInt(time))+"");
         BankLoanManager.getInterBankBorrowingList().add(blf);
         StudentMessage sm=new StudentMessage(code,buyCode,"4",bankInfo.getName()+"：请求同业拆借额度为"+money+"，利率为"+rate+"%，时间为1年",blf.getId());
         MessageManager.getList().add(sm);
 
         result.put("result","true");
-        try {
-            response.getWriter().write(result.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        response.getWriter().write(result.toString());
     }
     @RequestMapping(value = "/buyInterBankBorrowing", method = RequestMethod.GET)
-    public void buyInterBankBorrowing(HttpServletRequest request, HttpServletResponse response){
+    public void buyInterBankBorrowing(HttpServletRequest request, HttpServletResponse response) throws IOException{
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
@@ -84,25 +77,21 @@ public class UpdateInterBankBorrowingController {
             BankInfo loanBankInfo= StudentProcessManager.getBankInfoHashMap().get(blf.getLoanCode());
             if(bankInfo==null){
                 result.put("result","false");
-                try {
-                    response.getWriter().write(result.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                response.getWriter().write(result.toString());
                 return;
             }
             blf.setBuyCode(code);
             blf.setAudit(true);
+
+            bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(blf.getMoney())).toString());
+            loanBankInfo.setCash(new BigDecimal(loanBankInfo.getCash()).add(new BigDecimal(blf.getMoney())).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+
             bankInfo.getInterBankBorrowingList().add(blf);
             loanBankInfo.getInterBankBorrowingList().add(blf);
             StudentMessage sm=new StudentMessage(blf.getLoanCode(),blf.getBuyCode(),"1",bankInfo.getName()+"：买入"+loanBankInfo.getName()+"出售的同业拆借，额度为"+blf.getMoney()+"，利率为"+blf.getRate()+"%，时间为"+(Integer.parseInt(blf.getEndTime())-Integer.parseInt(blf.getStartTime()))+"年",blf.getId());
             MessageManager.getList().add(sm);
             result.put("result","true");
         }
-        try {
-            response.getWriter().write(result.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        response.getWriter().write(result.toString());
     }
 }

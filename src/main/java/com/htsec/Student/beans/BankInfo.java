@@ -17,6 +17,7 @@ public class BankInfo {
     private List<LoanInfo> loanInfoList;
 
     private String cash; //现金
+    private String freezCash; //冻结的现金
     private String time; //时间
     private List<FHinfo> zhInfoList; //支行信息
     private HashMap<String,String> companyEvaluateInfo;  //公司评级
@@ -138,5 +139,13 @@ public class BankInfo {
 
     public void setFinancialBondsList(List<BankLoanForm> financialBondsList) {
         this.financialBondsList = financialBondsList;
+    }
+
+    public String getFreezCash() {
+        return freezCash;
+    }
+
+    public void setFreezCash(String freezCash) {
+        this.freezCash = freezCash;
     }
 }

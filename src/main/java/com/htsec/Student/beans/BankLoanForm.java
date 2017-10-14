@@ -15,17 +15,23 @@ public class BankLoanForm {
     private String loanCode;
     //借款人的code
     private String buyCode;
-    //1 申请再贷款、2 国债管理、3 金融债管理、4 同业拆借
+    //1 申请再贷款、2 国债管理、3 金融债管理(3_1 金融债买入未成交)、4 同业拆借
     private String type;
     //审核状态
     private Boolean audit=false;
     private String money;
+    //规模
+    private String scale;
+    private String unitPrice;
     private String rate;
     private String startTime;
     private String endTime;
+    //关联贷款表单
+    private String ref;
     public BankLoanForm clone(){
         BankLoanForm blf=new BankLoanForm();
         blf.setId(this.id);
+        blf.setScale(this.scale);
         blf.setLoanCode(this.loanCode);
         blf.setBuyCode(this.buyCode);
         blf.setType(this.type);
@@ -107,5 +113,29 @@ public class BankLoanForm {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getScale() {
+        return scale;
+    }
+
+    public void setScale(String scale) {
+        this.scale = scale;
+    }
+
+    public String getRef() {
+        return ref;
+    }
+
+    public void setRef(String ref) {
+        this.ref = ref;
+    }
+
+    public String getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(String unitPrice) {
+        this.unitPrice = unitPrice;
     }
 }

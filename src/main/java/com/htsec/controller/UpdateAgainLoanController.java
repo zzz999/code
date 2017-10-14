@@ -24,7 +24,7 @@ public class UpdateAgainLoanController {
     private static final Logger logger = Logger.getLogger(UpdateAgainLoanController.class);
 
     @RequestMapping(value = "/updateAgainLoan", method = RequestMethod.GET)
-    public void updateAgainLoan(HttpServletRequest request, HttpServletResponse response){
+    public void updateAgainLoan(HttpServletRequest request, HttpServletResponse response) throws IOException{
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
@@ -39,11 +39,7 @@ public class UpdateAgainLoanController {
         blf.setType("1");
         BankLoanManager.getAgainLoanList().add(blf);
         result.put("result","true");
-        try {
-            response.getWriter().write(result.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        response.getWriter().write(result.toString());
     }
     @RequestMapping(value = "/auditAgainLoan", method = RequestMethod.GET)
     public void auditAgainLoan(HttpServletRequest request, HttpServletResponse response){
@@ -52,17 +48,16 @@ public class UpdateAgainLoanController {
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         // String requestQueryString = request.getQueryString();
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
-        String code =requestJson.getString("code");
         String id =requestJson.getString("id");
         String audit =requestJson.getString("audit");
-        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
+
         JSONObject result = new JSONObject();
         BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getAgainLoanList(),id);
+        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(blf.getLoanCode());
         //通过
         if(audit.equals("0")){
             blf.setAudit(true);
-            BigDecimal cash = new BigDecimal(bankInfo.getCash()==null?"0":bankInfo.getCash()).add(new BigDecimal(blf.getMoney())).setScale(2,BigDecimal.ROUND_HALF_UP);
-            bankInfo.setCash(cash.toString());
+            bankInfo.setCash(new BigDecimal(bankInfo.getCash()).add(new BigDecimal(blf.getMoney())).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
             bankInfo.getAgainLoanList().add(blf);
         }
 

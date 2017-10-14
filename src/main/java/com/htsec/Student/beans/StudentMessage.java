@@ -4,7 +4,9 @@ package com.htsec.Student.beans;
  * Created by bernard on 2017/9/26.
  */
 public class StudentMessage {
+    //发送的code
     private String code;
+    //发往的code
     private String sendCode;
     //1 文本消息、2 文件消息、3 金融债消息、4 同业拆借消息
     private String type;

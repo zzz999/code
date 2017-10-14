@@ -34,6 +34,15 @@ public class BankLoanManager {
         }
         return null ;
     };
+    public static List<BankLoanForm> findByRef(List<BankLoanForm> list,String ref){
+        List<BankLoanForm> array=new ArrayList<>();
+        for(BankLoanForm blf:list){
+            if(blf.getRef().equals(ref)){
+                array.add(blf);
+            }
+        }
+        return array ;
+    };
     public static List<BankLoanForm> getAgainLoanList() {
         return againLoanList;
     }

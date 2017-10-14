@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Created by bernard on 2017/9/26.
@@ -25,82 +30,159 @@ public class UpdateFinancialBondsController {
     private static final Logger logger = Logger.getLogger(UpdateFinancialBondsController.class);
 
     @RequestMapping(value = "/updateFinancialBonds", method = RequestMethod.GET)
-    public void updateFinancialBonds(HttpServletRequest request, HttpServletResponse response){
+    public void updateFinancialBonds(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
-       // String requestQueryString = request.getQueryString();
+        // String requestQueryString = request.getQueryString();
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
-        String code =requestJson.getString("code");
-        String money =requestJson.getString("money");
-        String rate =requestJson.getString("rate");
-        String time =requestJson.getString("time");
-        BankLoanForm blf=new BankLoanForm();
+        String code = requestJson.getString("code");
+        String scale = requestJson.getString("scale");
+        String unit_price = requestJson.getString("unit_price");
+        String rate = requestJson.getString("rate");
+        BankLoanForm blf = new BankLoanForm();
         blf.setLoanCode(code);
-        blf.setStartTime(time);
-        blf.setMoney(money);
+        blf.setScale(scale);
+        blf.setUnitPrice(unit_price);
+        blf.setMoney(new BigDecimal(unit_price).multiply(new BigDecimal(scale)).toString());
         blf.setRate(rate);
         blf.setType("3");
-        BankLoanManager.getFinancialBondsList().add(blf);
-        BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
         JSONObject result = new JSONObject();
-        if(bankInfo==null){
-            result.put("result","false");
-            try {
-                response.getWriter().write(result.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
+        if (bankInfo == null) {
+            result.put("result", "false");
+            response.getWriter().write(result.toString());
             return;
         }
+        if (new BigDecimal(blf.getMoney()).compareTo(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(bankInfo.getFreezCash())).divide(new BigDecimal(2))) == 1) {
+            result.put("result", "false");
+            result.put("info", "现金不足！");
+            response.getWriter().write(result.toString());
+            return;
+        }
+        bankInfo.setFreezCash(new BigDecimal(bankInfo.getFreezCash()).add(new BigDecimal(blf.getMoney())).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
         bankInfo.getFinancialBondsList().add(blf);
-        StudentMessage sm=new StudentMessage(code,"","3",bankInfo.getName()+"：申请金融债额度为"+money+"，利率为"+rate+"%",blf.getId());
+        StudentMessage sm = new StudentMessage(code, "", "3", bankInfo.getName() + "：发行金融债规模为" + scale + "股，每股单价为" + unit_price + "，利率为" + rate + "%", blf.getId() + '@' + code);
         MessageManager.getList().add(sm);
-        result.put("result","true");
+        result.put("result", "true");
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @RequestMapping(value = "/buyFinancialBonds", method = RequestMethod.GET)
-    public void buyFinancialBonds(HttpServletRequest request, HttpServletResponse response){
+    public void buyFinancialBonds(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         // String requestQueryString = request.getQueryString();
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
-        String code =requestJson.getString("code");
-        String id =requestJson.getString("id");
-        BankLoanForm blf=BankLoanManager.findByIdAndRemove(BankLoanManager.getFinancialBondsList(),id).clone();
-        JSONObject result = new JSONObject();
-        if(blf==null){
-            result.put("result","false");
-        }else{
-            BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
-            BankInfo loanBankInfo= StudentProcessManager.getBankInfoHashMap().get(blf.getLoanCode());
-            if(bankInfo==null){
-                result.put("result","false");
-                try {
-                    response.getWriter().write(result.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                return;
-            }
-            blf.setBuyCode(code);
-            blf.setAudit(true);
-            bankInfo.getFinancialBondsList().add(blf);
-            loanBankInfo.getFinancialBondsList().add(blf);
-            StudentMessage sm=new StudentMessage(blf.getLoanCode(),blf.getBuyCode(),"1",bankInfo.getName()+"：买入"+loanBankInfo.getName()+"申请的金融债，额度为"+blf.getMoney()+"，利率为"+blf.getRate()+"%",blf.getId());
-            MessageManager.getList().add(sm);
-            result.put("result","true");
-        }
-        try {
-            response.getWriter().write(result.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String buyCode = requestJson.getString("buyCode");
+        String loanCode = requestJson.getString("loanCode");
+        String unit_price = requestJson.getString("unit_price");
+        String scale = requestJson.getString("scale");
+        String id = requestJson.getString("id");
 
+        JSONObject result = new JSONObject();
+        BankInfo buyBankInfo = StudentProcessManager.getBankInfoHashMap().get(buyCode);
+        BankInfo loanBankInfo = StudentProcessManager.getBankInfoHashMap().get(loanCode);
+        BankLoanForm loanBlf = BankLoanManager.findById(buyBankInfo.getFinancialBondsList(), id);
+        if (loanBankInfo == null || buyBankInfo == null) {
+            result.put("result", "false");
+            response.getWriter().write(result.toString());
+            return;
+        }
+        BankLoanForm buyBlf = new BankLoanForm();
+        buyBlf.setLoanCode(loanCode);
+        buyBlf.setBuyCode(buyCode);
+        buyBlf.setScale(scale);
+        buyBlf.setUnitPrice(unit_price);
+        buyBlf.setMoney(new BigDecimal(buyBlf.getUnitPrice()).multiply(new BigDecimal(scale)).toString());
+        buyBlf.setRate(loanBlf.getRate());
+        buyBlf.setType("3_1");
+        buyBlf.setRef(id);
+
+        if (new BigDecimal(buyBlf.getMoney()).compareTo(new BigDecimal(buyBankInfo.getCash()).subtract(new BigDecimal(buyBankInfo.getFreezCash()))) == 1) {
+            result.put("result", "false");
+            result.put("info", "现金不足！");
+            response.getWriter().write(result.toString());
+            return;
+        }
+        buyBankInfo.setFreezCash(new BigDecimal(buyBankInfo.getFreezCash()).add(new BigDecimal(buyBlf.getMoney())).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+
+        BankLoanManager.getFinancialBondsList().add(buyBlf);
+        StudentMessage sm = new StudentMessage(buyBlf.getLoanCode(), buyBlf.getBuyCode(), "1", buyBankInfo.getName() + "：已申请" + loanBankInfo.getName() + "的金融债订单，总价为" + buyBlf.getMoney() + "，利率为" + buyBlf.getRate() + "%", null);
+        MessageManager.getList().add(sm);
+        result.put("result", "true");
+        response.getWriter().write(result.toString());
+
+    }
+
+    @RequestMapping(value = "/endFinancialBonds", method = RequestMethod.GET)
+    public void endFinancialBonds(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        JSONObject requestJson = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
+        String code = requestJson.getString("code");
+        String id = requestJson.getString("id");
+        String time = requestJson.getString("time");
+        JSONObject result = new JSONObject();
+        BankInfo loanBankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
+        BankLoanForm loanBlf = BankLoanManager.findById(loanBankInfo.getFinancialBondsList(), id);
+        if(loanBlf.getAudit()){
+            result.put("result", "false");
+            result.put("info", "不能重复结束招标！");
+            response.getWriter().write(result.toString());
+            return;
+        }
+        if (loanBankInfo == null) {
+            result.put("result", "false");
+            response.getWriter().write(result.toString());
+            return;
+        }
+        List<BankLoanForm> list = BankLoanManager.findByRef(BankLoanManager.getFinancialBondsList(), id);
+        Collections.sort(list,new Comparator<BankLoanForm>(){
+            public int compare(BankLoanForm arg0, BankLoanForm arg1) {
+                int result=new BigDecimal(arg1.getMoney()).compareTo(new BigDecimal(arg0.getMoney()));
+                if(result==0){
+                    return new BigDecimal(arg1.getScale()).compareTo(new BigDecimal(arg0.getScale()));
+                }
+                return result;
+            }
+        });
+        BigDecimal sum=new BigDecimal(0),count=new BigDecimal(loanBlf.getScale());
+        List<BankLoanForm> resultList=new ArrayList<>();
+        for(int i=0;i<list.size();i++){
+            BankLoanForm blf=list.get(i);
+            BigDecimal sumTemp=sum.add(new BigDecimal(blf.getScale()));
+            BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(blf.getBuyCode());
+            bankInfo.setFreezCash(new BigDecimal(bankInfo.getFreezCash()).subtract(new BigDecimal(blf.getMoney())).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+            BankLoanManager.getFinancialBondsList().remove(blf);
+            blf.setAudit(true);
+            blf.setStartTime(time);
+            blf.setEndTime((Integer.parseInt(time)+3)+"");
+            resultList.add(blf);
+            if(sumTemp.compareTo(count)==1){
+                blf.setScale(count.subtract(sum).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+                blf.setMoney(new BigDecimal(blf.getUnitPrice()).multiply(new BigDecimal(blf.getScale())).toString());
+                bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(blf.getMoney())).toString());
+                bankInfo.getFinancialBondsList().add(blf);
+                break;
+            }else{
+                bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(blf.getMoney())).toString());
+                bankInfo.getFinancialBondsList().add(blf);
+                if(sumTemp.compareTo(count)==0)break;
+                sum=sumTemp;
+            }
+        }
+        loanBlf.setAudit(true);
+        loanBlf.setStartTime(time);
+        loanBlf.setEndTime((Integer.parseInt(time)+3)+"");
+        loanBankInfo.setCash(new BigDecimal(loanBankInfo.getCash()).add(new BigDecimal(loanBlf.getMoney()).multiply(new BigDecimal(0.9999))).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+        result.put("result", "true");
+        result.put("info", resultList);
+        response.getWriter().write(result.toString());
     }
 }
