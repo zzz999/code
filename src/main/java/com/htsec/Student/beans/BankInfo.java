@@ -17,7 +17,7 @@ public class BankInfo {
     private List<LoanInfo> loanInfoList;
 
     private String cash; //现金
-    private String freezCash; //冻结的现金
+    private String freezeCash; //冻结的现金
     private String time; //时间
     private List<FHinfo> zhInfoList; //支行信息
     private HashMap<String,String> companyEvaluateInfo;  //公司评级
@@ -34,6 +34,7 @@ public class BankInfo {
         this.nationalLoanList=new ArrayList<>();
         this.interBankBorrowingList=new ArrayList<>();
         this.financialBondsList=new ArrayList<>();
+        this.freezeCash="0";
     }
 
     public String getCash() {
@@ -141,11 +142,11 @@ public class BankInfo {
         this.financialBondsList = financialBondsList;
     }
 
-    public String getFreezCash() {
-        return freezCash;
+    public String getFreezeCash() {
+        return freezeCash;
     }
 
-    public void setFreezCash(String freezCash) {
-        this.freezCash = freezCash;
+    public void setFreezeCash(String freezeCash) {
+        this.freezeCash = freezeCash;
     }
 }

@@ -5,6 +5,7 @@ import com.htsec.Student.beans.JGInfo;
 import com.htsec.Student.beans.StudentMessage;
 import com.htsec.Student.beans.FHinfo;
 import com.htsec.Student.process.MessageManager;
+import com.htsec.Student.process.StudentProcessManager;
 import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -30,6 +31,7 @@ public class StudentQueryStateController {
         JSONObject queryObj = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
         String code =queryObj.getString("code");
         JSONObject result = new JSONObject();
+        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
         ///
        /* FHinfo FHinfo = new FHinfo();
         FHinfo.setDepositGroupNum("1");
@@ -72,6 +74,7 @@ public class StudentQueryStateController {
         result.put("bankInfo",kk);
         result.put("jgInfo",jgInfo);
         result.put("message",messages);*/
+        result.put("bankInfo",bankInfo);
         result.put("message", MessageManager.findByCode(code));
         try {
             response.getWriter().write(result.toString());

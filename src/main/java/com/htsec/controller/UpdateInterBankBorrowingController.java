@@ -38,8 +38,9 @@ public class UpdateInterBankBorrowingController {
         String time =requestJson.getString("time");
         String rate =requestJson.getString("rate");
         BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
+        BankInfo buyBankInfo= StudentProcessManager.getBankInfoHashMap().get(buyCode);
         JSONObject result = new JSONObject();
-        if(bankInfo==null){
+        if(bankInfo==null||buyBankInfo==null){
             result.put("result","false");
             response.getWriter().write(result.toString());
             return;
@@ -53,7 +54,7 @@ public class UpdateInterBankBorrowingController {
         blf.setStartTime(time);
         blf.setEndTime((1+Integer.parseInt(time))+"");
         BankLoanManager.getInterBankBorrowingList().add(blf);
-        StudentMessage sm=new StudentMessage(code,buyCode,"4",bankInfo.getName()+"：请求同业拆借额度为"+money+"，利率为"+rate+"%，时间为1年",blf.getId());
+        StudentMessage sm=new StudentMessage(code,buyCode,"4",bankInfo.getName()+"：请求"+buyBankInfo.getName()+"同业拆借额度为"+money+"，利率为"+rate+"%，时间为1年",blf.getId());
         MessageManager.getList().add(sm);
 
         result.put("result","true");

@@ -54,13 +54,13 @@ public class UpdateFinancialBondsController {
             response.getWriter().write(result.toString());
             return;
         }
-        if (new BigDecimal(blf.getMoney()).compareTo(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(bankInfo.getFreezCash())).divide(new BigDecimal(2))) == 1) {
+        if (new BigDecimal(blf.getMoney()).compareTo(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(bankInfo.getFreezeCash())).divide(new BigDecimal(2))) == 1) {
             result.put("result", "false");
             result.put("info", "现金不足！");
             response.getWriter().write(result.toString());
             return;
         }
-        bankInfo.setFreezCash(new BigDecimal(bankInfo.getFreezCash()).add(new BigDecimal(blf.getMoney())).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+        bankInfo.setFreezeCash(new BigDecimal(bankInfo.getFreezeCash()).add(new BigDecimal(blf.getMoney())).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
         bankInfo.getFinancialBondsList().add(blf);
         StudentMessage sm = new StudentMessage(code, "", "3", bankInfo.getName() + "：发行金融债规模为" + scale + "股，每股单价为" + unit_price + "，利率为" + rate + "%", blf.getId() + '@' + code);
         MessageManager.getList().add(sm);
@@ -88,9 +88,15 @@ public class UpdateFinancialBondsController {
         JSONObject result = new JSONObject();
         BankInfo buyBankInfo = StudentProcessManager.getBankInfoHashMap().get(buyCode);
         BankInfo loanBankInfo = StudentProcessManager.getBankInfoHashMap().get(loanCode);
-        BankLoanForm loanBlf = BankLoanManager.findById(buyBankInfo.getFinancialBondsList(), id);
-        if (loanBankInfo == null || buyBankInfo == null) {
+        BankLoanForm loanBlf = BankLoanManager.findById(loanBankInfo.getFinancialBondsList(), id);
+        if (loanBankInfo == null || buyBankInfo == null||loanBlf==null) {
             result.put("result", "false");
+            response.getWriter().write(result.toString());
+            return;
+        }
+        if(loanBlf.getAudit()){
+            result.put("result", "false");
+            result.put("info", "已经结束招标，不可购买！");
             response.getWriter().write(result.toString());
             return;
         }
@@ -104,13 +110,13 @@ public class UpdateFinancialBondsController {
         buyBlf.setType("3_1");
         buyBlf.setRef(id);
 
-        if (new BigDecimal(buyBlf.getMoney()).compareTo(new BigDecimal(buyBankInfo.getCash()).subtract(new BigDecimal(buyBankInfo.getFreezCash()))) == 1) {
+        if (new BigDecimal(buyBlf.getMoney()).compareTo(new BigDecimal(buyBankInfo.getCash()).subtract(new BigDecimal(buyBankInfo.getFreezeCash()))) == 1) {
             result.put("result", "false");
             result.put("info", "现金不足！");
             response.getWriter().write(result.toString());
             return;
         }
-        buyBankInfo.setFreezCash(new BigDecimal(buyBankInfo.getFreezCash()).add(new BigDecimal(buyBlf.getMoney())).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+        buyBankInfo.setFreezeCash(new BigDecimal(buyBankInfo.getFreezeCash()).add(new BigDecimal(buyBlf.getMoney())).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
 
         BankLoanManager.getFinancialBondsList().add(buyBlf);
         StudentMessage sm = new StudentMessage(buyBlf.getLoanCode(), buyBlf.getBuyCode(), "1", buyBankInfo.getName() + "：已申请" + loanBankInfo.getName() + "的金融债订单，总价为" + buyBlf.getMoney() + "，利率为" + buyBlf.getRate() + "%", null);
@@ -147,32 +153,41 @@ public class UpdateFinancialBondsController {
             public int compare(BankLoanForm arg0, BankLoanForm arg1) {
                 int result=new BigDecimal(arg1.getMoney()).compareTo(new BigDecimal(arg0.getMoney()));
                 if(result==0){
-                    return new BigDecimal(arg1.getScale()).compareTo(new BigDecimal(arg0.getScale()));
+                    return new BigDecimal(arg1.getUnitPrice()).compareTo(new BigDecimal(arg0.getUnitPrice()));
                 }
                 return result;
             }
         });
-        BigDecimal sum=new BigDecimal(0),count=new BigDecimal(loanBlf.getScale());
+        BigDecimal sum=new BigDecimal(0),count=new BigDecimal(loanBlf.getScale()),sumScale=new BigDecimal(0),sumMoney=new BigDecimal(0);
         List<BankLoanForm> resultList=new ArrayList<>();
         for(int i=0;i<list.size();i++){
             BankLoanForm blf=list.get(i);
             BigDecimal sumTemp=sum.add(new BigDecimal(blf.getScale()));
             BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(blf.getBuyCode());
-            bankInfo.setFreezCash(new BigDecimal(bankInfo.getFreezCash()).subtract(new BigDecimal(blf.getMoney())).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+            bankInfo.setFreezeCash(new BigDecimal(bankInfo.getFreezeCash()).subtract(new BigDecimal(blf.getMoney())).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
             BankLoanManager.getFinancialBondsList().remove(blf);
             blf.setAudit(true);
             blf.setStartTime(time);
             blf.setEndTime((Integer.parseInt(time)+3)+"");
             resultList.add(blf);
+            StudentMessage sm;
             if(sumTemp.compareTo(count)==1){
                 blf.setScale(count.subtract(sum).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
-                blf.setMoney(new BigDecimal(blf.getUnitPrice()).multiply(new BigDecimal(blf.getScale())).toString());
+                blf.setMoney(new BigDecimal(blf.getUnitPrice()).multiply(new BigDecimal(blf.getScale())).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+                sumScale=sumScale.add(count.subtract(sum));
+                sumMoney=sumMoney.add(new BigDecimal(blf.getMoney()));
                 bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(blf.getMoney())).toString());
                 bankInfo.getFinancialBondsList().add(blf);
+                sm= new StudentMessage("-2", blf.getBuyCode(), "1", bankInfo.getName() + "：已完成金融债订单金额为："+blf.getMoney(), null);
+                MessageManager.getList().add(sm);
                 break;
             }else{
                 bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(blf.getMoney())).toString());
+                sumScale=sumScale.add(new BigDecimal(blf.getScale()));
+                sumMoney=sumMoney.add(new BigDecimal(blf.getMoney()));
                 bankInfo.getFinancialBondsList().add(blf);
+                sm = new StudentMessage("-2", blf.getBuyCode(), "1", bankInfo.getName() + "：已完成金融债订单金额为："+blf.getMoney(), null);
+                MessageManager.getList().add(sm);
                 if(sumTemp.compareTo(count)==0)break;
                 sum=sumTemp;
             }
@@ -180,9 +195,13 @@ public class UpdateFinancialBondsController {
         loanBlf.setAudit(true);
         loanBlf.setStartTime(time);
         loanBlf.setEndTime((Integer.parseInt(time)+3)+"");
+        loanBlf.setScale(sumScale.setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+        loanBlf.setMoney(sumMoney.setScale(2,BigDecimal.ROUND_HALF_UP).toString());
         loanBankInfo.setCash(new BigDecimal(loanBankInfo.getCash()).add(new BigDecimal(loanBlf.getMoney()).multiply(new BigDecimal(0.9999))).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+        StudentMessage sm = new StudentMessage(code, code, "1", loanBankInfo.getName() + "：结束金融债订单，订单金额为："+loanBlf.getMoney(), null);
+        MessageManager.getList().add(sm);
         result.put("result", "true");
-        result.put("info", resultList);
+        result.put("list", resultList);
         response.getWriter().write(result.toString());
     }
 }
