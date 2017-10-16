@@ -80,6 +80,93 @@ public class StudentOrderSelectController {
         response.getWriter().write(result.toString());
         return;
 
+    }
+
+    @RequestMapping(value = "/queryPersonalDepositResult", method = RequestMethod.GET)
+    public void queryPersonalDepositResult(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        String requestQueryString = request.getQueryString();
+        JSONObject requestJson = JSONObject.fromObject( CodeHelper.decode(requestQueryString));
+        String code=requestJson.getString("code");
+        String time=requestJson.getString("time");
+        JSONObject result = new JSONObject();
+        if(StudentOrderManager.getPersonalDepositMoneyMap().get(time)==null){
+            result.put("result","false");
+            response.getWriter().write(result.toString());
+            return;
+
+        }
+        //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
+        result.put("result","true");
+        result.put("money",StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code).toString());
+        //TODO 更新信息
+        response.getWriter().write(result.toString());
+
+        return;
+
+    }
+
+    @RequestMapping(value = "/queryCompanyDepositResult", method = RequestMethod.GET)
+    public void queryCompanyDepositResult(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        String requestQueryString = request.getQueryString();
+        JSONObject requestJson = JSONObject.fromObject( CodeHelper.decode(requestQueryString));
+        String code=requestJson.getString("code");
+        String time=requestJson.getString("time");
+        JSONObject result = new JSONObject();
+        if(StudentOrderManager.getCompanyDepositMoneyMap().get(time)==null){
+            result.put("result","false");
+            response.getWriter().write(result.toString());
+            return;
+
+        }
+        //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
+        result.put("result","true");
+        result.put("money",StudentOrderManager.getCompanyDepositMoneyMap().get(time).get(code).toString());
+        //TODO 更新信息
+        response.getWriter().write(result.toString());
+
+        return;
+    }
+
+    @RequestMapping(value = "/queryPersonalLoanResult", method = RequestMethod.GET)
+    public void queryPersonalLoanResult(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        String requestQueryString = request.getQueryString();
+        JSONObject requestJson = JSONObject.fromObject( CodeHelper.decode(requestQueryString));
+        String code=requestJson.getString("code");
+        String time=requestJson.getString("time");
+        JSONObject result = new JSONObject();
+        if(StudentOrderManager.getCarLoanMoneyMap().get(time)==null){
+            result.put("result","false");
+            response.getWriter().write(result.toString());
+            return;
+
+        }
+        if(StudentOrderManager.getOtherLoanMoneyMap().get(time)==null){
+            result.put("result","false");
+            response.getWriter().write(result.toString());
+            return;
+
+        }
+
+        if(StudentOrderManager.getHouseLoanMoneyMap().get(time)==null){
+            result.put("result","false");
+            response.getWriter().write(result.toString());
+            return;
+        }
+        //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
+        result.put("result","true");
+        result.put("carMoney",StudentOrderManager.getCarLoanMoneyMap().get(time).get(code).toString());
+        result.put("otherMoney",StudentOrderManager.getOtherLoanMoneyMap().get(time).get(code).toString());
+        result.put("houseMoney",StudentOrderManager.getHouseLoanMoneyMap().get(time).get(code).toString());
+        //TODO 更新信息
+        response.getWriter().write(result.toString());
+
+        return;
 
     }
 

@@ -162,20 +162,23 @@ public class StudentOrderManager {
             if(companyDepositMoneyMap.get(year)==null){
                 companyDepositMoneyMap.put(year,new HashMap<>());
             }
-            companyDepositMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(totalSocre).multiply(MoneyToDeposit));
+            companyDepositMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(totalSocre,8,BigDecimal.ROUND_HALF_UP).multiply(MoneyToDeposit));
         }
         return true;
 
     }
 
     public static BigDecimal calcScore(String now ,String big){
+        if(now==null||big==null){
+            return new BigDecimal("1");
+        }
 
         BigDecimal nowDeci = new BigDecimal(now);
         BigDecimal bigDeci = new BigDecimal(big);
         if(big ==""||big=="0"){
             return new BigDecimal("1");
         }else {
-            return nowDeci.divide(bigDeci);
+            return nowDeci.divide(bigDeci,8,BigDecimal.ROUND_HALF_UP);
         }
     }
 
@@ -270,7 +273,7 @@ public class StudentOrderManager {
             if(personalDepositMoneyMap.get(year)==null){
                 personalDepositMoneyMap.put(year,new HashMap<>());
             }
-            personalDepositMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(totalSocre).multiply(MoneyToDeposit));
+            personalDepositMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(totalSocre,6,BigDecimal.ROUND_HALF_UP).multiply(MoneyToDeposit));
         }
         return true;
     }
@@ -423,21 +426,21 @@ public class StudentOrderManager {
             if(houseLoanMoneyMap.get(year)==null){
                 houseLoanMoneyMap.put(year,new HashMap<>());
             }
-            houseLoanMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(houseLoantotalSocre).multiply(houseMoneyToDeposit));
+            houseLoanMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(houseLoantotalSocre,8,BigDecimal.ROUND_HALF_UP).multiply(houseMoneyToDeposit));
         }
 
         for(Map.Entry<String,BigDecimal> entry: carscoreHashMap.entrySet()){
             if(carLoanMoneyMap.get(year)==null){
                 carLoanMoneyMap.put(year,new HashMap<>());
             }
-            carLoanMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(carLoantotalScore).multiply(carMoneyToDeposit));
+            carLoanMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(carLoantotalScore,8,BigDecimal.ROUND_HALF_UP).multiply(carMoneyToDeposit));
         }
 
         for(Map.Entry<String,BigDecimal> entry: ohterscoreHashMap.entrySet()){
             if(otherLoanMoneyMap.get(year)==null){
                 otherLoanMoneyMap.put(year,new HashMap<>());
             }
-            otherLoanMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(otherLoantatalScore).multiply(otherMoneyToDeposit));
+            otherLoanMoneyMap.get(year).put(entry.getKey(),entry.getValue().divide(otherLoantatalScore,8,BigDecimal.ROUND_HALF_UP).multiply(otherMoneyToDeposit));
         }
 
 
@@ -446,7 +449,7 @@ public class StudentOrderManager {
 
 
 
-    public boolean startCompanyLongLoanProcess(String year){
+    public static boolean startCompanyLongLoanProcess(String year){
         HashMap<String,CompanyLoanOrder> companyLoanOrderHashMap= companLoanOrderMap.get(year);
         if(companyLoanOrderHashMap.size()<StudentProcessManager.getBankInfoHashMap().size()){
             return false;
@@ -468,7 +471,7 @@ public class StudentOrderManager {
             StudentOrderSelectBean studentOrderSelectBean = new StudentOrderSelectBean();
             studentOrderSelectBean.setCode(entry.getKey());
             studentOrderSelectBean.setType("0");
-            BigDecimal round= new BigDecimal(entry.getValue().getCompanyLongLoanOrderADmoney()).subtract(new BigDecimal("10")).divide(new BigDecimal("50"));
+            BigDecimal round= new BigDecimal(entry.getValue().getCompanyLongLoanOrderADmoney()).subtract(new BigDecimal("10")).divide(new BigDecimal("50"),8,BigDecimal.ROUND_HALF_UP);
             studentOrderSelectBean.setTimeRemain(round.intValue()+"");
             studentOrderSelectBean.setRate(entry.getValue().getCompanyLongLoanOrderRate());
             process.getStudentOrderSelectBeanList().add(studentOrderSelectBean);
@@ -487,7 +490,7 @@ public class StudentOrderManager {
     }
 
 
-    public boolean startCompanyShortLoanProcess(String year){
+    public static boolean startCompanyShortLoanProcess(String year){
         HashMap<String,CompanyLoanOrder> companyLoanOrderHashMap= companLoanOrderMap.get(year);
         if(companyLoanOrderHashMap.size()<StudentProcessManager.getBankInfoHashMap().size()){
             return false;
@@ -510,7 +513,7 @@ public class StudentOrderManager {
             StudentOrderSelectBean studentOrderSelectBean = new StudentOrderSelectBean();
             studentOrderSelectBean.setCode(entry.getKey());
             studentOrderSelectBean.setType("1");
-            BigDecimal round= (new BigDecimal(entry.getValue().getCompanyShortLoanADmoney()).subtract(new BigDecimal("10"))).divide(new BigDecimal("50"));
+            BigDecimal round= (new BigDecimal(entry.getValue().getCompanyShortLoanADmoney()).subtract(new BigDecimal("10"))).divide(new BigDecimal("50"),8,BigDecimal.ROUND_HALF_UP);
             studentOrderSelectBean.setTimeRemain(round.intValue()+"");
             studentOrderSelectBean.setRate(entry.getValue().getCompanyShortLoanRate());
             process.getStudentOrderSelectBeanList().add(studentOrderSelectBean);
