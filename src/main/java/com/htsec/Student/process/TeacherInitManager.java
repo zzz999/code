@@ -1,5 +1,6 @@
 package com.htsec.Student.process;
 
+import com.htsec.Student.beans.CompanyDepositOrder;
 import com.htsec.Student.init.bean.*;
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ public class TeacherInitManager {
     private static ContryDeposit contryDeposit;
     private static HashMap<String ,CompanyInfo> companyInfoHashMap = new HashMap<>();
     private static List<String> companyNames;
+    private static CompanyDeposit companyDeposit;
 
     public static BaseRate getBaseRate() {
         return baseRate;
@@ -104,5 +106,13 @@ public class TeacherInitManager {
 
     public static void setCompanyNames(List<String> companyNames) {
         TeacherInitManager.companyNames = companyNames;
+    }
+
+    public static CompanyDeposit getCompanyDeposit() {
+        return companyDeposit;
+    }
+
+    public static void setCompanyDeposit(CompanyDeposit companyDeposit) {
+        TeacherInitManager.companyDeposit = companyDeposit;
     }
 }

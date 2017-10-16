@@ -26,6 +26,11 @@ public class BankInfo {
     private List<BankLoanForm> nationalLoanList;//国债
     private List<BankLoanForm> interBankBorrowingList;//同业拆借
     private List<BankLoanForm> financialBondsList;//金融债
+    private HashMap<String,String> newIncreaseDepositMap;//<time,新增存款总额>
+    private HashMap<String,String> totalDepositMap;//<time,贷款总额>
+
+
+
     public BankInfo() {
         this.companyEvaluateInfo = new HashMap<String,String>();
         this.zhInfoList = new ArrayList<>();
@@ -35,6 +40,9 @@ public class BankInfo {
         this.interBankBorrowingList=new ArrayList<>();
         this.financialBondsList=new ArrayList<>();
         this.freezeCash="0";
+        this.newIncreaseDepositMap = new HashMap<>();
+        this.totalDepositMap = new HashMap<>();
+        this.qdInfo = new QDInfo();
     }
 
     public String getCash() {
@@ -148,5 +156,21 @@ public class BankInfo {
 
     public void setFreezeCash(String freezeCash) {
         this.freezeCash = freezeCash;
+    }
+
+    public HashMap<String, String> getNewIncreaseDepositMap() {
+        return newIncreaseDepositMap;
+    }
+
+    public void setNewIncreaseDepositMap(HashMap<String, String> newIncreaseDepositMap) {
+        this.newIncreaseDepositMap = newIncreaseDepositMap;
+    }
+
+    public HashMap<String, String> getTotalDepositMap() {
+        return totalDepositMap;
+    }
+
+    public void setTotalDepositMap(HashMap<String, String> totalDepositMap) {
+        this.totalDepositMap = totalDepositMap;
     }
 }
