@@ -1,6 +1,7 @@
 package com.htsec.controller;
 
 import com.htsec.Student.beans.BankInfo;
+import com.htsec.Student.beans.BankLoanForm;
 import com.htsec.Student.beans.StudentMessage;
 import com.htsec.Student.process.MessageManager;
 import com.htsec.Student.process.StudentProcessManager;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -111,6 +113,65 @@ public class StudentLoginController {
         }
 
 
+    }
+
+
+    @RequestMapping(value = "/updateStudents", method = RequestMethod.GET)
+    public void updateStudents(HttpServletRequest request, HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        String requestQueryString = CodeHelper.decode(request.getQueryString());
+        JSONObject requestJson = JSONObject.fromObject(requestQueryString);
+        String code =requestJson.getString("code");
+        JSONObject result = new JSONObject();
+        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+        if(requestJson.getString("name")!=null)bankInfo.setName(requestJson.getString("name"));
+        if(requestJson.getString("affiliatedSchool")!=null)bankInfo.setAffiliatedSchool(requestJson.getString("affiliatedSchool"));
+        if(requestJson.getString("ceoNames")!=null)bankInfo.setCeoNames(requestJson.getString("ceoNames"));
+        if(requestJson.getString("cfoNames")!=null)bankInfo.setCfoNames(requestJson.getString("cfoNames"));
+        if(requestJson.getString("cloNames")!=null)bankInfo.setCloNames(requestJson.getString("cloNames"));
+        if(requestJson.getString("cmoNames")!=null)bankInfo.setCmoNames(requestJson.getString("cmoNames"));
+        if(requestJson.getString("cpoNames")!=null)bankInfo.setCpoNames(requestJson.getString("cpoNames"));
+        if(requestJson.getString("managementState")!=null)bankInfo.setManagementState(requestJson.getString("managementState"));
+        result.put("result","true" );
+        try {
+            response.getWriter().write(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    @RequestMapping(value = "/queryStudentsInfo", method = RequestMethod.GET)
+    public void queryStudentsInfo(HttpServletRequest request, HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        String requestQueryString = CodeHelper.decode(request.getQueryString());
+        JSONObject requestJson = JSONObject.fromObject(requestQueryString);
+        String code =requestJson.getString("code");
+        JSONObject result = new JSONObject();
+        result.put("info", StudentProcessManager.getBankInfoHashMap().get(code));
+        try {
+            response.getWriter().write(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @RequestMapping(value = "/addCash", method = RequestMethod.GET)
+    public void addCash(HttpServletRequest request, HttpServletResponse response){
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        JSONObject requestJson = JSONObject.fromObject( CodeHelper.decode(request.getQueryString()));
+        String code =requestJson.getString("code");
+        JSONObject result = new JSONObject();
+        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+       bankInfo.setCash( new BigDecimal(bankInfo.getCash()).add(new BigDecimal(requestJson.getString("money"))).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+        result.put("result","true" );
+        try {
+            response.getWriter().write(result.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @RequestMapping(value = "/sendMessage", method = RequestMethod.GET)
     public void sendMessage(HttpServletRequest request, HttpServletResponse response){

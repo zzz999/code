@@ -22,6 +22,16 @@ public class BankInfo {
     private List<FHinfo> zhInfoList; //支行信息
     private HashMap<String,String> companyEvaluateInfo;  //公司评级
 
+
+    private String affiliatedSchool; //所属学校
+    private String ceoNames;
+    private String cfoNames;
+    private String cloNames;
+    private String cmoNames;
+    private String cpoNames;
+
+    private String managementState;//用户经营状态 1经营中 2破产
+
     private List<BankLoanForm> againLoanList;//再贷款
     private List<BankLoanForm> nationalLoanList;//国债
     private List<BankLoanForm> interBankBorrowingList;//同业拆借
@@ -40,6 +50,8 @@ public class BankInfo {
         this.interBankBorrowingList=new ArrayList<>();
         this.financialBondsList=new ArrayList<>();
         this.freezeCash="0";
+        this.time="1";
+        this.managementState="1";
         this.newIncreaseDepositMap = new HashMap<>();
         this.totalDepositMap = new HashMap<>();
         this.qdInfo = new QDInfo();
@@ -172,5 +184,61 @@ public class BankInfo {
 
     public void setTotalDepositMap(HashMap<String, String> totalDepositMap) {
         this.totalDepositMap = totalDepositMap;
+    }
+
+    public String getAffiliatedSchool() {
+        return affiliatedSchool;
+    }
+
+    public void setAffiliatedSchool(String affiliatedSchool) {
+        this.affiliatedSchool = affiliatedSchool;
+    }
+
+    public String getCeoNames() {
+        return ceoNames;
+    }
+
+    public void setCeoNames(String ceoNames) {
+        this.ceoNames = ceoNames;
+    }
+
+    public String getCfoNames() {
+        return cfoNames;
+    }
+
+    public void setCfoNames(String cfoNames) {
+        this.cfoNames = cfoNames;
+    }
+
+    public String getCloNames() {
+        return cloNames;
+    }
+
+    public void setCloNames(String cloNames) {
+        this.cloNames = cloNames;
+    }
+
+    public String getCmoNames() {
+        return cmoNames;
+    }
+
+    public void setCmoNames(String cmoNames) {
+        this.cmoNames = cmoNames;
+    }
+
+    public String getCpoNames() {
+        return cpoNames;
+    }
+
+    public void setCpoNames(String cpoNames) {
+        this.cpoNames = cpoNames;
+    }
+
+    public String getManagementState() {
+        return managementState;
+    }
+
+    public void setManagementState(String managementState) {
+        this.managementState = managementState;
     }
 }
