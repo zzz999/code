@@ -527,9 +527,7 @@ public class StudentOrderManager {
         }else {
             process.setNext(1);
         }
-
         return true;
-
     }
 
 
