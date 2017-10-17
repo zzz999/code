@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class StudentOrderSelectBean implements Comparable<StudentOrderSelectBean>{
     private String code;
-    private String timeRemain;
+    private int timeRemain;
     private String rate;
     private String type;
     private String lastYearNewDeposit;
@@ -18,11 +18,11 @@ public class StudentOrderSelectBean implements Comparable<StudentOrderSelectBean
         this.code = code;
     }
 
-    public String getTimeRemain() {
+    public int getTimeRemain() {
         return timeRemain;
     }
 
-    public void setTimeRemain(String timeRemain) {
+    public void setTimeRemain(int timeRemain) {
         this.timeRemain = timeRemain;
     }
 

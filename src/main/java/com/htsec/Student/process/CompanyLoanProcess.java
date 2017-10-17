@@ -14,7 +14,7 @@ public class CompanyLoanProcess {
     private QYLongOrder qyLongOrder;//企业长订单
     private QYShortOrder qyShortOrder;//企业短订单
     private String type;//类型
-    private List<StudentOrderSelectBean> studentOrderSelectBeanList;
+    private List<StudentOrderSelectBean> studentOrderSelectBeanList;//学生选单信息
     private int next =0;
     private HashMap<String,List<String>> selectedOrders;
 
