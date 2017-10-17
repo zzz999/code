@@ -42,6 +42,7 @@ public class BankInfo {
 
 
     public BankInfo() {
+        this.cash="5000";
         this.companyEvaluateInfo = new HashMap<String,String>();
         this.zhInfoList = new ArrayList<>();
         this.zhInfoList.add(new FHinfo());
