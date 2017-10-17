@@ -485,7 +485,7 @@ public class StudentOrderManager {
         }else {
             process.setNext(1);
         }
-
+        process.setStart(true);
         return true;
     }
 
@@ -514,6 +514,8 @@ public class StudentOrderManager {
             studentOrderSelectBean.setCode(entry.getKey());
             studentOrderSelectBean.setType("1");
             BigDecimal round= (new BigDecimal(entry.getValue().getCompanyShortLoanADmoney()).subtract(new BigDecimal("10"))).divide(new BigDecimal("50"),8,BigDecimal.ROUND_HALF_UP);
+            //增加短贷营销费
+            studentOrderSelectBean.setAdmoney(entry.getValue().getCompanyShortLoanADmoney());
             studentOrderSelectBean.setTimeRemain(round.intValue());
             studentOrderSelectBean.setRate(entry.getValue().getCompanyShortLoanRate());
             process.getStudentOrderSelectBeanList().add(studentOrderSelectBean);
@@ -527,6 +529,7 @@ public class StudentOrderManager {
         }else {
             process.setNext(1);
         }
+        process.setStart(true);
         return true;
     }
 

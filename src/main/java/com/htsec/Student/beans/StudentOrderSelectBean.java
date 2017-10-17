@@ -2,7 +2,7 @@ package com.htsec.Student.beans;
 
 import java.math.BigDecimal;
 
-public class StudentOrderSelectBean implements Comparable<StudentOrderSelectBean>{
+public class StudentOrderSelectBean implements Comparable<StudentOrderSelectBean> {
     private String code;
     private int timeRemain;
     private String rate;
@@ -60,14 +60,17 @@ public class StudentOrderSelectBean implements Comparable<StudentOrderSelectBean
 
     @Override
     public int compareTo(StudentOrderSelectBean o) {
-        int a=new BigDecimal(this.rate).compareTo( new BigDecimal(o.rate));
-        if(a!=0){
+        int a = new BigDecimal(this.rate).compareTo(new BigDecimal(o.rate));
+        if (a != 0 || this.Admoney == null && this.lastYearNewDeposit == null) {
             return a;
-        }else {
+        } else if (this.Admoney == null && this.lastYearNewDeposit != null) {
+            int c = new BigDecimal(this.lastYearNewDeposit).compareTo(new BigDecimal(o.lastYearNewDeposit));
+            return c;
+        } else {
             int b = new BigDecimal(this.Admoney).compareTo(new BigDecimal(o.Admoney));
-            if(b !=0){
+            if (b != 0 || this.lastYearNewDeposit == null) {
                 return b;
-            }else {
+            } else {
                 int c = new BigDecimal(this.lastYearNewDeposit).compareTo(new BigDecimal(o.lastYearNewDeposit));
                 return c;
             }
