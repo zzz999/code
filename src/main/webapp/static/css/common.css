@@ -121,6 +121,9 @@ input:focus,textarea:focus {
 .red_color{
     color:#ea4a3c;
 }
+.fl{
+    float: left;
+}
 .fr{
     float: right;
 }

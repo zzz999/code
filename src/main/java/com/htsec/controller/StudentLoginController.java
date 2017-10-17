@@ -27,18 +27,18 @@ public class StudentLoginController {
 
 
     @RequestMapping(value = "/studentLogin", method = RequestMethod.GET)
-    public void studentLogin(HttpServletRequest request, HttpServletResponse response){
+    public void studentLogin(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         JSONObject queryObj = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
         JSONObject result = new JSONObject();
-        if(StudentProcessManager.getBankInfoHashMap().containsKey(queryObj.getString("code"))==false){
-            result.put("result","false");
-        }else {
-           BankInfo info= StudentProcessManager.getBankInfoHashMap().get(queryObj.getString("code"));
-           info.setName(queryObj.getString("name"));
-           result.put("result","true");
-           result.put("code",queryObj.getString("code"));
+        if (StudentProcessManager.getBankInfoHashMap().containsKey(queryObj.getString("code")) == false) {
+            result.put("result", "false");
+        } else {
+            BankInfo info = StudentProcessManager.getBankInfoHashMap().get(queryObj.getString("code"));
+            info.setName(queryObj.getString("name"));
+            result.put("result", "true");
+            result.put("code", queryObj.getString("code"));
         }
 
         try {
@@ -49,36 +49,35 @@ public class StudentLoginController {
         return;
 
 
-
     }
 
     @RequestMapping(value = "/teacherInitStudent", method = RequestMethod.GET)
-    public void teacherInitStudent(HttpServletRequest request, HttpServletResponse response){
+    public void teacherInitStudent(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         JSONObject queryObj = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
         JSONObject result = new JSONObject();
         int studentNum = Integer.parseInt(queryObj.getString("studentNum"));
-        if(StudentProcessManager.getBankInfoHashMap().size()>=studentNum){
+        if (StudentProcessManager.getBankInfoHashMap().size() >= studentNum) {
             ArrayList<String> arrayList = new ArrayList<>();
-            for(String key:StudentProcessManager.getBankInfoHashMap().keySet()){
+            for (String key : StudentProcessManager.getBankInfoHashMap().keySet()) {
                 arrayList.add(key);
             }
-            result.put("codes",arrayList);
-        }else {
-            int oldSize =studentNum-StudentProcessManager.getBankInfoHashMap().size();
-            for(int i=0;i<oldSize;i++){
+            result.put("codes", arrayList);
+        } else {
+            int oldSize = studentNum - StudentProcessManager.getBankInfoHashMap().size();
+            for (int i = 0; i < oldSize; i++) {
                 BankInfo bankInfo = new BankInfo();
-                String code = Math.abs((System.currentTimeMillis()+"bank"+i).hashCode())+"";
-                bankInfo.setName("银行"+(i+1));
+                String code = Math.abs((System.currentTimeMillis() + "bank" + i).hashCode()) + "";
+                bankInfo.setName("银行" + (i + 1));
                 bankInfo.setCash("50000000.00");
-                StudentProcessManager.getBankInfoHashMap().put(code,bankInfo);
+                StudentProcessManager.getBankInfoHashMap().put(code, bankInfo);
             }
             ArrayList<String> arrayList = new ArrayList<>();
-            for(String key:StudentProcessManager.getBankInfoHashMap().keySet()){
+            for (String key : StudentProcessManager.getBankInfoHashMap().keySet()) {
                 arrayList.add(key);
             }
-            result.put("codes",arrayList);
+            result.put("codes", arrayList);
         }
 
         try {
@@ -91,20 +90,20 @@ public class StudentLoginController {
     }
 
     @RequestMapping(value = "/queryStudents", method = RequestMethod.GET)
-    public void queryStudents(HttpServletRequest request, HttpServletResponse response){
+    public void queryStudents(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         JSONObject result = new JSONObject();
         List<Map> arrayList = new ArrayList<>();
-        HashMap<String, BankInfo> bankInfoHashMap=StudentProcessManager.getBankInfoHashMap();
-        for(String key:bankInfoHashMap.keySet()){
-            if(bankInfoHashMap.get(key).getName()==null) continue;
-            Map<String,String> fields=new HashMap<>();
-            fields.put("code",key);
-            fields.put("name",bankInfoHashMap.get(key).getName());
+        HashMap<String, BankInfo> bankInfoHashMap = StudentProcessManager.getBankInfoHashMap();
+        for (String key : bankInfoHashMap.keySet()) {
+            if (bankInfoHashMap.get(key).getName() == null) continue;
+            Map<String, String> fields = new HashMap<>();
+            fields.put("code", key);
+            fields.put("name", bankInfoHashMap.get(key).getName());
             arrayList.add(fields);
         }
-        result.put("list",arrayList);
+        result.put("list", arrayList);
 
         try {
             response.getWriter().write(result.toString());
@@ -117,23 +116,25 @@ public class StudentLoginController {
 
 
     @RequestMapping(value = "/updateStudents", method = RequestMethod.GET)
-    public void updateStudents(HttpServletRequest request, HttpServletResponse response){
+    public void updateStudents(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
-        String code =requestJson.getString("code");
+        String code = requestJson.getString("code");
         JSONObject result = new JSONObject();
-        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
-        if(requestJson.getString("name")!=null)bankInfo.setName(requestJson.getString("name"));
-        if(requestJson.getString("affiliatedSchool")!=null)bankInfo.setAffiliatedSchool(requestJson.getString("affiliatedSchool"));
-        if(requestJson.getString("ceoNames")!=null)bankInfo.setCeoNames(requestJson.getString("ceoNames"));
-        if(requestJson.getString("cfoNames")!=null)bankInfo.setCfoNames(requestJson.getString("cfoNames"));
-        if(requestJson.getString("cloNames")!=null)bankInfo.setCloNames(requestJson.getString("cloNames"));
-        if(requestJson.getString("cmoNames")!=null)bankInfo.setCmoNames(requestJson.getString("cmoNames"));
-        if(requestJson.getString("cpoNames")!=null)bankInfo.setCpoNames(requestJson.getString("cpoNames"));
-        if(requestJson.getString("managementState")!=null)bankInfo.setManagementState(requestJson.getString("managementState"));
-        result.put("result","true" );
+        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
+        if (requestJson.getString("name") != null) bankInfo.setName(requestJson.getString("name"));
+        if (requestJson.getString("affiliatedSchool") != null)
+            bankInfo.setAffiliatedSchool(requestJson.getString("affiliatedSchool"));
+        if (requestJson.getString("ceoNames") != null) bankInfo.setCeoNames(requestJson.getString("ceoNames"));
+        if (requestJson.getString("cfoNames") != null) bankInfo.setCfoNames(requestJson.getString("cfoNames"));
+        if (requestJson.getString("cloNames") != null) bankInfo.setCloNames(requestJson.getString("cloNames"));
+        if (requestJson.getString("cmoNames") != null) bankInfo.setCmoNames(requestJson.getString("cmoNames"));
+        if (requestJson.getString("cpoNames") != null) bankInfo.setCpoNames(requestJson.getString("cpoNames"));
+        if (requestJson.getString("managementState") != null)
+            bankInfo.setManagementState(requestJson.getString("managementState"));
+        result.put("result", "true");
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {
@@ -142,13 +143,14 @@ public class StudentLoginController {
 
 
     }
+
     @RequestMapping(value = "/queryStudentsInfo", method = RequestMethod.GET)
-    public void queryStudentsInfo(HttpServletRequest request, HttpServletResponse response){
+    public void queryStudentsInfo(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
-        String code =requestJson.getString("code");
+        String code = requestJson.getString("code");
         JSONObject result = new JSONObject();
         result.put("info", StudentProcessManager.getBankInfoHashMap().get(code));
         try {
@@ -157,35 +159,37 @@ public class StudentLoginController {
             e.printStackTrace();
         }
     }
+
     @RequestMapping(value = "/addCash", method = RequestMethod.GET)
-    public void addCash(HttpServletRequest request, HttpServletResponse response){
+    public void addCash(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
-        JSONObject requestJson = JSONObject.fromObject( CodeHelper.decode(request.getQueryString()));
-        String code =requestJson.getString("code");
+        JSONObject requestJson = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
+        String code = requestJson.getString("code");
         JSONObject result = new JSONObject();
-        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
-       bankInfo.setCash( new BigDecimal(bankInfo.getCash()).add(new BigDecimal(requestJson.getString("money"))).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
-        result.put("result","true" );
+        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
+        bankInfo.setCash(new BigDecimal(bankInfo.getCash()).add(new BigDecimal(requestJson.getString("money"))).setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+        result.put("result", "true");
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     @RequestMapping(value = "/sendMessage", method = RequestMethod.GET)
-    public void sendMessage(HttpServletRequest request, HttpServletResponse response){
+    public void sendMessage(HttpServletRequest request, HttpServletResponse response) {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         JSONObject result = new JSONObject();
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
-        String code =requestJson.getString("code");
-        String sendCode =requestJson.getString("sendCode");
-        String text =requestJson.getString("text");
-        BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
-        if(bankInfo==null){
-            result.put("result","false");
+        String code = requestJson.getString("code");
+        String sendCode = requestJson.getString("sendCode");
+        String text = requestJson.getString("text");
+        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
+        if (bankInfo == null) {
+            result.put("result", "false");
             try {
                 response.getWriter().write(result.toString());
             } catch (IOException e) {
@@ -193,9 +197,9 @@ public class StudentLoginController {
             }
             return;
         }
-        StudentMessage sm=new StudentMessage(code,sendCode,"1",bankInfo.getName()+"："+text,null);
+        StudentMessage sm = new StudentMessage(code, sendCode, "1", bankInfo.getName() + "：" + text, null);
         MessageManager.getList().add(sm);
-        result.put("result","true");
+        result.put("result", "true");
 
         try {
             response.getWriter().write(result.toString());
