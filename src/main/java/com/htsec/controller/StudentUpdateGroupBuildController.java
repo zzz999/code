@@ -4,6 +4,7 @@ import com.htsec.Student.beans.BankInfo;
 import com.htsec.Student.beans.FHinfo;
 import com.htsec.Student.beans.GroupInfo;
 import com.htsec.Student.beans.ZHInfo;
+import com.htsec.Student.process.StudentInitManager;
 import com.htsec.Student.process.StudentProcessManager;
 import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSON;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Controller
@@ -83,7 +85,7 @@ public class StudentUpdateGroupBuildController {
     }
 
     @RequestMapping(value = "/updateGroupInfo", method = RequestMethod.GET)
-    public void updateGroupInfo(HttpServletRequest request, HttpServletResponse response){
+    public void updateGroupInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         String requestQueryString = CodeHelper.decode(request.getQueryString());
@@ -114,6 +116,29 @@ public class StudentUpdateGroupBuildController {
             }
             List<FHinfo> fHinfoList = bankInfo.getZhInfoList();
             List<ZHInfo> zhInfoList = fHinfoList.get(0).getZhInfoList();
+            int dkgroupCount =0;
+            int ckgroupCount =0;
+            for(Object newBuild:updateGroupInfo){
+                JSONObject groupJSON = (JSONObject) newBuild;
+                if(groupJSON.getString("dkGroup")!=null&&groupJSON.getString("dkGroup").equalsIgnoreCase("true")){
+                    dkgroupCount++;
+                }
+                if(groupJSON.getString("ckGroup")!=null&&groupJSON.getString("ckGroup").equalsIgnoreCase("true")){
+                    ckgroupCount++;
+                }
+
+            }
+            BigDecimal depositGroupBuildCost = new BigDecimal(StudentInitManager.getGroupBuildRule().getDepositGroupBuildCost());
+            BigDecimal loanGroupBuildCost =new BigDecimal(StudentInitManager.getGroupBuildRule().getLoanGroupBuildCost());
+            BigDecimal totalBuildCost = depositGroupBuildCost.multiply(new BigDecimal(dkgroupCount)).add(loanGroupBuildCost.multiply(new BigDecimal(ckgroupCount)));
+            if(new BigDecimal(bankInfo.getCash()).compareTo(totalBuildCost)<0){
+                result.put("result","false");
+                result.put("info","现金不足");
+                response.getWriter().write(result.toString());
+                return;
+            }
+            bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(totalBuildCost).toString());
+
 
             for(Object gropInfo:updateGroupInfo){
                 JSONObject obj = (JSONObject) gropInfo;
