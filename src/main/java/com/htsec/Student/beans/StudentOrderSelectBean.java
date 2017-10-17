@@ -1,6 +1,8 @@
 package com.htsec.Student.beans;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class StudentOrderSelectBean implements Comparable<StudentOrderSelectBean> {
     private String code;
@@ -75,5 +77,21 @@ public class StudentOrderSelectBean implements Comparable<StudentOrderSelectBean
                 return c;
             }
         }
+    }
+
+    public static void main(String[] args) {
+        StudentOrderSelectBean a = new StudentOrderSelectBean();
+        StudentOrderSelectBean b = new StudentOrderSelectBean();
+        StudentOrderSelectBean c = new StudentOrderSelectBean();
+        ArrayList<StudentOrderSelectBean> list = new ArrayList<>();
+        a.setRate("6");
+        b.setRate("3");
+        c.setRate("5");
+        list.add(a);
+        list.add(b);
+        list.add(c);
+       //Collections.sort(list);
+       Collections.reverse(list);
+        System.currentTimeMillis();
     }
 }

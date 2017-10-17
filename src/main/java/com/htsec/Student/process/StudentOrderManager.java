@@ -479,6 +479,7 @@ public class StudentOrderManager {
         }
 
         Collections.sort(process.getStudentOrderSelectBeanList());
+        Collections.reverse(process.getStudentOrderSelectBeanList());
         process.setNowCode(process.getStudentOrderSelectBeanList().get(0).getCode());
         if(process.getStudentOrderSelectBeanList().size()<=1){
             process.setNext(0);
@@ -522,12 +523,14 @@ public class StudentOrderManager {
             process.setQyShortOrder(qyShortOrderByYear);
         }
 
+
         Collections.sort(process.getStudentOrderSelectBeanList());
+        Collections.reverse(process.getStudentOrderSelectBeanList());
         process.setNowCode(process.getStudentOrderSelectBeanList().get(0).getCode());
         if(process.getStudentOrderSelectBeanList().size()<=1){
             process.setNext(0);
         }else {
-            process.setNext(1);
+            process.setNext(0);
         }
         process.setStart(true);
         return true;

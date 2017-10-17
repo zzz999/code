@@ -2,6 +2,7 @@ package com.htsec.Student.beans;
 
 import org.jcodings.util.Hash;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ public class BankInfo {
     public BankInfo() {
         this.cash="5000";
         this.companyEvaluateInfo = new HashMap<String,String>();
+        this.loanInfoList = new ArrayList<>();
         this.zhInfoList = new ArrayList<>();
         this.zhInfoList.add(new FHinfo());
         this.againLoanList=new ArrayList<>();
@@ -242,4 +244,18 @@ public class BankInfo {
     public void setManagementState(String managementState) {
         this.managementState = managementState;
     }
+
+
+    public void addDepositCash(BigDecimal addmoney){
+        //TODO 增加限制条件
+        this.setCash(new BigDecimal(this.getCash()).add(addmoney).toString());
+        ////TODO 更新当前存款总数
+    }
+
+    public void removeLoanCash(BigDecimal loanMoney){
+        //TODO 校验当前现金
+        //TODO 校验贷款金额限制条件
+        this.setCash(new BigDecimal(this.getCash()).subtract(loanMoney).toString());
+    }
+
 }

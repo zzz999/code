@@ -106,12 +106,16 @@ public class StudentUpdatePersonalOrderController {
         String code=queryObj.getString("code");
         String time=queryObj.getString("time");
         JSONObject personalDepositOrder = queryObj.getJSONObject("personalDepositOrder");
+
+
         //JSONObject personalLoanOrder = queryObj.getJSONObject("personalLoanOrder");
         if(StudentProcessManager.getBankInfoHashMap().get(code)==null){
             result.put("result","false");
             response.getWriter().write(result.toString());
             return;
         }
+        //扣除营销费
+        //StudentProcessManager.getBankInfoHashMap().get(code)
         if (StudentOrderManager.getPersonalDepositOrderMap().get(time)==null){
             PersonalDepositOrder order = new PersonalDepositOrder();
             order.setADmoney(personalDepositOrder.getString("ADmoney"));

@@ -1,8 +1,12 @@
 package com.htsec.controller;
 
 
+import com.htsec.Student.beans.BankInfo;
+import com.htsec.Student.beans.LoanInfo;
 import com.htsec.Student.beans.StudentOrderSelectBean;
 import com.htsec.Student.init.bean.CompanyInfo;
+import com.htsec.Student.init.bean.QYLongOrderBean;
+import com.htsec.Student.init.bean.QYShortOrderBean;
 import com.htsec.Student.process.CompanyLoanProcess;
 import com.htsec.Student.process.StudentOrderManager;
 import com.htsec.Student.process.StudentProcessManager;
@@ -17,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +113,22 @@ public class StudentOrderSelectController {
         String code=requestJson.getString("code");
         String orderName=requestJson.getString("orderName");
         String time=requestJson.getString("time");
+
         CompanyLoanProcess process=StudentOrderManager.getCompanyLongLoanProcessHashMap().get(time);
+        //校验现金是否足够  并扣除现金
+        for(QYLongOrderBean qyLongOrderBean:process.getQyLongOrder().getLongOrders()){
+           if( qyLongOrderBean.getOrderNum().equalsIgnoreCase(orderName)){
+               BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+              if(new BigDecimal(bankInfo.getCash()).compareTo(new BigDecimal( qyLongOrderBean.getLoanMoney()))<0){
+                  JSONObject result = new JSONObject();
+                  result.put("result","false");
+                  result.put("info","现金不足");
+                  response.getWriter().write(result.toString());
+              }else {
+                  bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(qyLongOrderBean.getLoanMoney())).toString());
+              }
+            }
+        }
         if(process.getSelectedOrders().get(code)==null){
             process.getSelectedOrders().put(code,new ArrayList<String>());
         }
@@ -116,6 +136,19 @@ public class StudentOrderSelectController {
         StudentOrderSelectBean studentOrderSelectBean=process.getStudentOrderSelectBeanList().get(process.getNext());
         studentOrderSelectBean.setTimeRemain(studentOrderSelectBean.getTimeRemain()-1);
         setNextSelectStudent(process);
+        //将订单更新到学生
+        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+        List<LoanInfo> loanInfoList =bankInfo.getLoanInfoList();
+        for(QYLongOrderBean qyLongOrderBean:process.getQyLongOrder().getLongOrders()){
+            if(qyLongOrderBean.getOrderNum().equalsIgnoreCase(orderName)){
+                LoanInfo loanInfo = new LoanInfo();
+                loanInfo.setLoanMoney(qyLongOrderBean.getLoanMoney());
+                loanInfo.setLoanStartTime(time);
+                loanInfo.setLoanType("companyLongOrder");
+                loanInfo.setQyLongOrderBean(qyLongOrderBean);
+                loanInfoList.add(loanInfo);
+            }
+        }
         JSONObject result = new JSONObject();
         result.put("result","true");
         response.getWriter().write(result.toString());
@@ -132,6 +165,20 @@ public class StudentOrderSelectController {
         String orderName=requestJson.getString("orderName");
         String time=requestJson.getString("time");
         CompanyLoanProcess process=StudentOrderManager.getCompanyShortLoanProcessHashMap().get(time);
+        //校验现金是否足够  并扣除现金
+        for(QYShortOrderBean qyShortOrderBean:process.getQyShortOrder().getShortOrderBeans()){
+            if( qyShortOrderBean.getOrderNum().equalsIgnoreCase(orderName)){
+                BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+                if(new BigDecimal(bankInfo.getCash()).compareTo(new BigDecimal( qyShortOrderBean.getLoanMoney()))<0){
+                    JSONObject result = new JSONObject();
+                    result.put("result","false");
+                    result.put("info","现金不足");
+                    response.getWriter().write(result.toString());
+                }else {
+                    bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(qyShortOrderBean.getLoanMoney())).toString());
+                }
+            }
+        }
         if(process.getSelectedOrders().get(code)==null){
             process.getSelectedOrders().put(code,new ArrayList<String>());
         }
@@ -139,6 +186,19 @@ public class StudentOrderSelectController {
         StudentOrderSelectBean studentOrderSelectBean=process.getStudentOrderSelectBeanList().get(process.getNext());
         studentOrderSelectBean.setTimeRemain(studentOrderSelectBean.getTimeRemain()-1);
         setNextSelectStudent(process);
+        //将订单更新到学生
+        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+        List<LoanInfo> loanInfoList =bankInfo.getLoanInfoList();
+        for(QYShortOrderBean qyShortOrderBean:process.getQyShortOrder().getShortOrderBeans()){
+            if(qyShortOrderBean.getOrderNum().equalsIgnoreCase(orderName)){
+                LoanInfo loanInfo = new LoanInfo();
+                loanInfo.setLoanMoney(qyShortOrderBean.getLoanMoney());
+                loanInfo.setLoanStartTime(time);
+                loanInfo.setLoanType("companyShortOrder");
+                loanInfo.setQyShortOrderBean(qyShortOrderBean);
+                loanInfoList.add(loanInfo);
+            }
+        }
         JSONObject result = new JSONObject();
         result.put("result","true");
         response.getWriter().write(result.toString());
@@ -152,8 +212,10 @@ public class StudentOrderSelectController {
            process.setNext(process.getNext()+1);
            if(process.getNext()<totalPeople){
                StudentOrderSelectBean studentOrderSelectBean= process.getStudentOrderSelectBeanList().get(process.getNext());
+               //process.setNowCode(process.getStudentOrderSelectBeanList().get(process.getNext()).getCode());
                if(studentOrderSelectBean.getTimeRemain()>=1){
                    //studentOrderSelectBean.setTimeRemain(studentOrderSelectBean.getTimeRemain()-1);
+                   process.setNowCode(process.getStudentOrderSelectBeanList().get(process.getNext()).getCode());
                    isOver =true;
                    break;
                }
@@ -162,6 +224,7 @@ public class StudentOrderSelectController {
                StudentOrderSelectBean studentOrderSelectBean= process.getStudentOrderSelectBeanList().get(process.getNext());
                if(studentOrderSelectBean.getTimeRemain()>=1){
                    //studentOrderSelectBean.setTimeRemain(studentOrderSelectBean.getTimeRemain()-1);
+                   process.setNowCode(process.getStudentOrderSelectBeanList().get(process.getNext()).getCode());
                    isOver =true;
                    break;
                }
@@ -188,7 +251,10 @@ public class StudentOrderSelectController {
             return;
 
         }
+        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+        //bankInfo.setCash(bankInfo);
         //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
+        bankInfo.addDepositCash(StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code));
         result.put("result","true");
         result.put("money",StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code).toString());
         //TODO 更新信息
@@ -214,6 +280,10 @@ public class StudentOrderSelectController {
 
         }
         //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
+        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+        //bankInfo.setCash(bankInfo);
+        //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
+        bankInfo.addDepositCash(StudentOrderManager.getCompanyDepositMoneyMap().get(time).get(code));
         result.put("result","true");
         result.put("money",StudentOrderManager.getCompanyDepositMoneyMap().get(time).get(code).toString());
         //TODO 更新信息
@@ -250,6 +320,10 @@ public class StudentOrderSelectController {
             return;
         }
         //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
+        BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
+        bankInfo.removeLoanCash(StudentOrderManager.getCarLoanMoneyMap().get(time).get(code));
+        bankInfo.removeLoanCash(StudentOrderManager.getOtherLoanMoneyMap().get(time).get(code));
+        bankInfo.removeLoanCash(StudentOrderManager.getHouseLoanMoneyMap().get(time).get(code));
         result.put("result","true");
         result.put("carMoney",StudentOrderManager.getCarLoanMoneyMap().get(time).get(code).toString());
         result.put("otherMoney",StudentOrderManager.getOtherLoanMoneyMap().get(time).get(code).toString());
