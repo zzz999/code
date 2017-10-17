@@ -472,7 +472,7 @@ public class StudentOrderManager {
             studentOrderSelectBean.setCode(entry.getKey());
             studentOrderSelectBean.setType("0");
             BigDecimal round= new BigDecimal(entry.getValue().getCompanyLongLoanOrderADmoney()).subtract(new BigDecimal("10")).divide(new BigDecimal("50"),8,BigDecimal.ROUND_HALF_UP);
-            studentOrderSelectBean.setTimeRemain(round.intValue()+"");
+            studentOrderSelectBean.setTimeRemain(round.intValue());
             studentOrderSelectBean.setRate(entry.getValue().getCompanyLongLoanOrderRate());
             process.getStudentOrderSelectBeanList().add(studentOrderSelectBean);
             process.setQyLongOrder(qyLongOrderByYear);
@@ -514,7 +514,7 @@ public class StudentOrderManager {
             studentOrderSelectBean.setCode(entry.getKey());
             studentOrderSelectBean.setType("1");
             BigDecimal round= (new BigDecimal(entry.getValue().getCompanyShortLoanADmoney()).subtract(new BigDecimal("10"))).divide(new BigDecimal("50"),8,BigDecimal.ROUND_HALF_UP);
-            studentOrderSelectBean.setTimeRemain(round.intValue()+"");
+            studentOrderSelectBean.setTimeRemain(round.intValue());
             studentOrderSelectBean.setRate(entry.getValue().getCompanyShortLoanRate());
             process.getStudentOrderSelectBeanList().add(studentOrderSelectBean);
             process.setQyShortOrder(qyShortOrderByYear);

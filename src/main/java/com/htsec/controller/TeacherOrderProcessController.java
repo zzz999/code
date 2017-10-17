@@ -25,7 +25,7 @@ public class TeacherOrderProcessController {
         JSONObject requestJson = JSONObject.fromObject(CodeHelper.decode(requestQueryString));
         String time=requestJson.getString("time");
         JSONObject result = new JSONObject();
-        if(StudentOrderManager.getPersonalLoanOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
+        if(StudentOrderManager.getPersonalLoanOrderMap().size()==0||StudentOrderManager.getPersonalLoanOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
             result.put("result","false");
             result.put("info","存在未提交学生");
             response.getWriter().write(result.toString());
@@ -33,6 +33,7 @@ public class TeacherOrderProcessController {
         }
         if(StudentOrderManager.dispatchHouseLoanOrder(time)){
             result.put("result","true");
+            response.getWriter().write(result.toString());
             return;
         }else {
             result.put("result","false");
@@ -49,7 +50,7 @@ public class TeacherOrderProcessController {
         JSONObject requestJson = JSONObject.fromObject(CodeHelper.decode(requestQueryString));
         String time=requestJson.getString("time");
         JSONObject result = new JSONObject();
-        if(StudentOrderManager.getPersonalDepositOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
+        if(StudentOrderManager.getPersonalLoanOrderMap().size()==0||StudentOrderManager.getPersonalDepositOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
             result.put("result","false");
             result.put("info","存在未提交学生");
             response.getWriter().write(result.toString());
@@ -74,7 +75,7 @@ public class TeacherOrderProcessController {
         JSONObject requestJson = JSONObject.fromObject(CodeHelper.decode(requestQueryString));
         String time=requestJson.getString("time");
         JSONObject result = new JSONObject();
-        if(StudentOrderManager.getCompanyDepositOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
+        if(StudentOrderManager.getPersonalLoanOrderMap().size()==0||StudentOrderManager.getCompanyDepositOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
             result.put("result","false");
             result.put("info","存在未提交学生");
             response.getWriter().write(result.toString());
@@ -82,6 +83,7 @@ public class TeacherOrderProcessController {
         }
         if(StudentOrderManager.dispathCompanyDepositOrder(time)){
             result.put("result","true");
+            response.getWriter().write(result.toString());
             return;
         }else {
             result.put("result","false");
@@ -98,7 +100,7 @@ public class TeacherOrderProcessController {
         JSONObject requestJson = JSONObject.fromObject(CodeHelper.decode(requestQueryString));
         String time=requestJson.getString("time");
         JSONObject result = new JSONObject();
-        if(StudentOrderManager.getCompanLoanOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
+        if(StudentOrderManager.getPersonalLoanOrderMap().size()==0||StudentOrderManager.getCompanLoanOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
             result.put("result","false");
             result.put("info","存在未提交学生");
             response.getWriter().write(result.toString());
@@ -106,6 +108,7 @@ public class TeacherOrderProcessController {
         }
         if(StudentOrderManager.startCompanyLongLoanProcess(time)){
             result.put("result","true");
+            response.getWriter().write(result.toString());
             return;
         }else {
             result.put("result","false");
@@ -123,7 +126,7 @@ public class TeacherOrderProcessController {
         JSONObject requestJson = JSONObject.fromObject(CodeHelper.decode(requestQueryString));
         String time=requestJson.getString("time");
         JSONObject result = new JSONObject();
-        if(StudentOrderManager.getCompanLoanOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
+        if(StudentOrderManager.getPersonalLoanOrderMap().size()==0||StudentOrderManager.getCompanLoanOrderMap().get(time).size()!= StudentProcessManager.getBankInfoHashMap().size()){
             result.put("result","false");
             result.put("info","存在未提交学生");
             response.getWriter().write(result.toString());
@@ -131,6 +134,7 @@ public class TeacherOrderProcessController {
         }
         if(StudentOrderManager.startCompanyShortLoanProcess(time)){
             result.put("result","true");
+            response.getWriter().write(result.toString());
             return;
         }else {
             result.put("result","false");
