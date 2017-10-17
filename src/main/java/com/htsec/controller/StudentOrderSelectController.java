@@ -170,7 +170,6 @@ public class StudentOrderSelectController {
 
     }
 
-
     @RequestMapping(value = "/queryPersonalDepositResult", method = RequestMethod.GET)
     public void queryPersonalDepositResult(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setCharacterEncoding("UTF-8");
