@@ -5,6 +5,7 @@ import com.htsec.Student.beans.StudentOrderSelectBean;
 import com.htsec.Student.init.bean.CompanyInfo;
 import com.htsec.Student.process.CompanyLoanProcess;
 import com.htsec.Student.process.StudentOrderManager;
+import com.htsec.Student.process.StudentProcessManager;
 import com.htsec.Student.process.TeacherInitManager;
 import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSONObject;
@@ -47,6 +48,7 @@ public class StudentOrderSelectController {
         result.put("isStart",companyLoanProcess.isStart());
         result.put("code",companyLoanProcess.getNowCode());
         result.put("qyLongOrder",companyLoanProcess.getQyLongOrder());
+        result.put("bankList", StudentProcessManager.getBankInfoHashMap());
         if(companyLoanProcess.getSelectedOrders().size()==0){
             result.put("selectedOrders",new ArrayList<>());
         }else {
@@ -83,6 +85,7 @@ public class StudentOrderSelectController {
         result.put("isStart",companyLoanProcess.isStart());
         result.put("code",companyLoanProcess.getNowCode());
         result.put("qyShortOrder",companyLoanProcess.getQyShortOrder());
+        result.put("bankList", StudentProcessManager.getBankInfoHashMap());
         if(companyLoanProcess.getSelectedOrders().size()==0){
             result.put("selectedOrders",new ArrayList<>());
         }else {

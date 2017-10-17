@@ -127,10 +127,10 @@ public class StudentUpdateGroupBuildController {
                         if(zhInfo.getGroupInfo()==null){
                             zhInfo.setGroupInfo(new GroupInfo());
                         }
-                        if(dkGroup.equalsIgnoreCase("true")){
+                        if(dkGroup!=null&&dkGroup.equalsIgnoreCase("true")){
                             zhInfo.getGroupInfo().getLoanGroup().setLoanGroupBuildTime(bankInfo.getTime());
                         }
-                        if(ckGroup.equalsIgnoreCase("true")){
+                        if(ckGroup!=null&&ckGroup.equalsIgnoreCase("true")){
                             zhInfo.getGroupInfo().getDepositGroup().setDepositGroupBuiltTime(bankInfo.getTime());
                         }
                     }
