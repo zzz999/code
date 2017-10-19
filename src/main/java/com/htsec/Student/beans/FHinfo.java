@@ -1,5 +1,6 @@
 package com.htsec.Student.beans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,7 +33,20 @@ public class FHinfo {
 
     public FHinfo (){
         this.FHname ="1";
-        this.setFHbuildTime("");
+        this.setFHbuildTime("1");
+        this.zhInfoList =new ArrayList<>();
+        ZHInfo zhInfo = new ZHInfo();
+        zhInfo.setZHname("1");
+        zhInfo.setZHbuildTime("1");
+        GroupInfo groupInfo = new GroupInfo();
+
+        LoanGroup loanGroup = new LoanGroup();
+        loanGroup.setLoanGroupBuildTime("1");
+        DepositGroup depositGroup = new DepositGroup();
+        depositGroup.setDepositGroupBuiltTime("1");
+        groupInfo.setLoanGroup(loanGroup);
+        groupInfo.setDepositGroup(depositGroup);
+        zhInfo.setGroupInfo(groupInfo);
         //this.zh
 
     }
