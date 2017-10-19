@@ -128,20 +128,20 @@ input:focus,textarea:focus {
     float: right;
 }
 ::-webkit-scrollbar {
-    width: 0.33333333rem;
+    width: 18px;
 }
 ::-webkit-scrollbar-track,
 ::-webkit-scrollbar-thumb {
     border-radius: 999px;
-    border: 0.09259259rem solid transparent;
+    border: 5px solid transparent;
 }
 ::-webkit-scrollbar-track {
-    box-shadow: 0.01851852rem 0.01851852rem 0.09259259rem rgba(0, 0, 0, 0.2) inset;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2) inset;
 }
 ::-webkit-scrollbar-thumb {
-    min-height: 0.37037037rem;
+    min-height: 20px;
     background-clip: content-box;
-    box-shadow: 0 0 0 0.09259259rem rgba(0, 0, 0, 0.2) inset;
+    box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.2) inset;
 }
 ::-webkit-scrollbar-corner {
     background: transparent;

@@ -484,7 +484,7 @@ public class StudentOrderManager {
         if(process.getStudentOrderSelectBeanList().size()<=1){
             process.setNext(0);
         }else {
-            process.setNext(1);
+            process.setNext(0);
         }
         process.setStart(true);
         return true;
