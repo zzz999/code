@@ -254,10 +254,11 @@ public class StudentOrderSelectController {
         BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
         //bankInfo.setCash(bankInfo);
         //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
-        bankInfo.addDepositCash(StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code));
+        //加钱
+        bankInfo.addDepositCash(StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code),time);
         result.put("result","true");
         result.put("money",StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code).toString());
-        //TODO 更新信息
+
         response.getWriter().write(result.toString());
 
         return;
@@ -283,10 +284,9 @@ public class StudentOrderSelectController {
         BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
         //bankInfo.setCash(bankInfo);
         //StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code);
-        bankInfo.addDepositCash(StudentOrderManager.getCompanyDepositMoneyMap().get(time).get(code));
+        bankInfo.addDepositCash(StudentOrderManager.getCompanyDepositMoneyMap().get(time).get(code),time);
         result.put("result","true");
         result.put("money",StudentOrderManager.getCompanyDepositMoneyMap().get(time).get(code).toString());
-        //TODO 更新信息
         response.getWriter().write(result.toString());
 
         return;
