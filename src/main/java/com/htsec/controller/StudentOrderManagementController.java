@@ -37,12 +37,17 @@ public class StudentOrderManagementController {
         BankInfo bankInfo =StudentProcessManager.getBankInfoHashMap().get(code);
         List<LoanInfo> loanInfoList= bankInfo.getLoanInfoList();
         HashMap<String,List<LoanInfo>> LoanInfoMap = new HashMap<>();
-       for(LoanInfo loanInfo:loanInfoList){
-           if(LoanInfoMap.get(loanInfo.getLoanStartTime()) ==null){
-               LoanInfoMap.put(loanInfo.getLoanStartTime(),new ArrayList<>());
-           }
-           LoanInfoMap.get(loanInfo.getLoanStartTime()).add(loanInfo);
-       }
+        for(LoanInfo loanInfo:loanInfoList){
+            if(LoanInfoMap.get(loanInfo.getLoanStartTime()) ==null){
+                LoanInfoMap.put(loanInfo.getLoanStartTime(),new ArrayList<>());
+            }
+            LoanInfoMap.get(loanInfo.getLoanStartTime()).add(loanInfo);
+        }
+
+        result.put("nationalLoanList",bankInfo.getNationalLoanList());
+        result.put("againLoanList",bankInfo.getAgainLoanList());
+        result.put("interBankBorrowingList",bankInfo.getInterBankBorrowingList());
+        result.put("financialBondsList",bankInfo.getFinancialBondsList());
 
         result.put("loanInfoMap",LoanInfoMap);
         response.getWriter().write(result.toString());
