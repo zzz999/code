@@ -47,6 +47,7 @@ public class FHinfo {
         groupInfo.setLoanGroup(loanGroup);
         groupInfo.setDepositGroup(depositGroup);
         zhInfo.setGroupInfo(groupInfo);
+        this.zhInfoList.add(zhInfo);
         //this.zh
 
     }
