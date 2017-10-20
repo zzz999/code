@@ -43,6 +43,7 @@ public class UpdateNationalLoanController {
         blf.setLoanCode(code);
         blf.setMoney(money);
         blf.setType("2");
+        blf.setRate("4");
         blf.setStartTime(time);
         blf.setEndTime((Integer.parseInt(time) + 4) + "");
         JSONObject result = new JSONObject();

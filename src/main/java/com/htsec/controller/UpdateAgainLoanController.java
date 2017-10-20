@@ -32,11 +32,13 @@ public class UpdateAgainLoanController {
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
         String code =requestJson.getString("code");
         String money =requestJson.getString("money");
+        String time =requestJson.getString("time");
         JSONObject result = new JSONObject();
         BankLoanForm blf=new BankLoanForm();
         blf.setLoanCode(code);
         blf.setMoney(money);
         blf.setType("1");
+        blf.setStartTime(time);
         BankLoanManager.getAgainLoanList().add(blf);
         result.put("result","true");
         response.getWriter().write(result.toString());
