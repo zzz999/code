@@ -8,6 +8,7 @@ public class TXOrderBean {
     private String TXtime;
     private String ZQ;
     private String rate;
+    private String QYname;
 
     public String getNum() {
         return num;
@@ -63,6 +64,14 @@ public class TXOrderBean {
 
     public void setZQ(String ZQ) {
         this.ZQ = ZQ;
+    }
+
+    public String getQYname() {
+        return QYname;
+    }
+
+    public void setQYname(String QYname) {
+        this.QYname = QYname;
     }
 
     @Override
