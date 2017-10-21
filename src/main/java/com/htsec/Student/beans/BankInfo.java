@@ -1,5 +1,6 @@
 package com.htsec.Student.beans;
 
+import com.htsec.Student.init.bean.TXOrderBean;
 import com.htsec.Student.process.StudentInitManager;
 import com.htsec.Student.process.TeacherInitManager;
 import org.jcodings.util.Hash;
@@ -39,6 +40,7 @@ public class BankInfo {
     private List<BankLoanForm> nationalLoanList;//国债
     private List<BankLoanForm> interBankBorrowingList;//同业拆借
     private List<BankLoanForm> financialBondsList;//金融债
+    private List<TXOrderBean> txOrderBeanList; //贴现订单
     private HashMap<String,String> newIncreaseDepositMap;//<time,新增存款总额>
     private HashMap<String,String> totalDepositMap;//<time,存款总额>
     private HashMap<String,String> totalLoanMap;//<time,贷款总额>
@@ -265,6 +267,14 @@ public class BankInfo {
 
     public void setNewIncreaseLoanMap(HashMap<String, String> newIncreaseLoanMap) {
         this.newIncreaseLoanMap = newIncreaseLoanMap;
+    }
+
+    public List<TXOrderBean> getTxOrderBeanList() {
+        return txOrderBeanList;
+    }
+
+    public void setTxOrderBeanList(List<TXOrderBean> txOrderBeanList) {
+        this.txOrderBeanList = txOrderBeanList;
     }
 
     public void addDepositCash(BigDecimal addmoney, String year){

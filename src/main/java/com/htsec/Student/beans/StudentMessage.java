@@ -8,7 +8,7 @@ public class StudentMessage {
     private String code;
     //发往的code -1 老师 ''全体
     private String sendCode;
-    //1 文本消息、2 文件消息、3 金融债消息、4 同业拆借消息
+    //1 文本消息、2 文件消息、3 金融债消息、4 同业拆借消息 5 贴现订单
     private String type;
     private String message;
     private String fileName;

@@ -9,7 +9,7 @@ public class TXOrderBean {
     private String ZQ;
     private String rate;
     private String QYname;
-
+    private Boolean audit=false;
     public String getNum() {
         return num;
     }
@@ -72,6 +72,14 @@ public class TXOrderBean {
 
     public void setQYname(String QYname) {
         this.QYname = QYname;
+    }
+
+    public Boolean getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Boolean audit) {
+        this.audit = audit;
     }
 
     @Override
