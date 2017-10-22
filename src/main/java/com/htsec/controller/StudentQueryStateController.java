@@ -1,10 +1,8 @@
 package com.htsec.controller;
 
-import com.htsec.Student.beans.BankInfo;
-import com.htsec.Student.beans.JGInfo;
-import com.htsec.Student.beans.StudentMessage;
-import com.htsec.Student.beans.FHinfo;
+import com.htsec.Student.beans.*;
 import com.htsec.Student.process.MessageManager;
+import com.htsec.Student.process.StudentInitManager;
 import com.htsec.Student.process.StudentProcessManager;
 import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSONObject;
@@ -16,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by bernard on 2017/9/26.
@@ -30,6 +30,7 @@ public class StudentQueryStateController {
         response.setContentType("application/json");
         JSONObject queryObj = JSONObject.fromObject(CodeHelper.decode(request.getQueryString()));
         String code =queryObj.getString("code");
+        String time =queryObj.getString("time");
         JSONObject result = new JSONObject();
         BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
         ///
@@ -71,10 +72,22 @@ public class StudentQueryStateController {
 
 
 
+
         result.put("bankInfo",kk);
         result.put("jgInfo",jgInfo);
         result.put("message",messages);*/
+       String totalDeposit=bankInfo.getTotalDepositMap().get(time);
+       String totalLoan=bankInfo.getTotalLoanMap().get(time);
+       String DepositLoanRate ="0";
+       if(totalDeposit==null||totalLoan==null||totalLoan=="0"){
+
+       }else {
+           DepositLoanRate= new BigDecimal(totalLoan).divide(new BigDecimal(totalDeposit),8,BigDecimal.ROUND_HALF_UP).toString();
+       }
         result.put("bankInfo",bankInfo);
+       result.put("depositLoanRate",DepositLoanRate);
+
+
         result.put("message", MessageManager.findByCode(code));
         try {
             response.getWriter().write(result.toString());
@@ -83,4 +96,52 @@ public class StudentQueryStateController {
         }
 
     }
+/**
+ * 计算风险加权资产
+ */
+    private BigDecimal calcFXJQ(BankInfo bankInfo,String time){
+        BigDecimal result =new BigDecimal("0");
+
+        //TODO 存放在央行的款项
+        //TODO 当前同行拆借*0.2
+        //TODO 当前金融债总额*1
+        //当前企业贷款*1
+       // result=result.add(bankInfo.getTotalLoanMap())
+        return result;
+    }
+
+    /**
+     * 计算 企业贷款总额
+     */
+
+    private BigDecimal calcCompanyLoan(BankInfo bankInfo,String time){
+        List<LoanInfo> loanInfoList=bankInfo.getLoanInfoList();
+        if(loanInfoList ==null||loanInfoList.size()==0){
+            return new BigDecimal("0");
+        }
+        String carLoanTime=StudentInitManager.getLoanRule().getCarLoanTime();
+        String companyShortLoanTime=StudentInitManager.getLoanRule().getCompanyShortLoanTime();
+        String otherLoanTime= StudentInitManager.getLoanRule().getOtherLoanTime();
+        String companyLongLoanTime = StudentInitManager.getLoanRule().getCompanyLongLoanTime();
+        String houseLoanTime=StudentInitManager.getLoanRule().getHouseLoanTime();
+        BigDecimal companyShortLoanMoney = new BigDecimal("0");
+        BigDecimal companyLongLoanMoney = new BigDecimal("0");
+        for(LoanInfo loanInfo:loanInfoList){
+            if(loanInfo.getLoanType().equalsIgnoreCase("companyShortOrder")){
+                if(new BigDecimal(time).subtract(new BigDecimal(loanInfo.getLoanStartTime())).compareTo(new BigDecimal(companyShortLoanTime))<0){
+                    companyShortLoanMoney=companyShortLoanMoney.add(new BigDecimal(loanInfo.getLoanMoney()));
+                }
+
+            }
+            if(loanInfo.getLoanType().equalsIgnoreCase("companyLongOrder")){
+                if(new BigDecimal(time).subtract(new BigDecimal(loanInfo.getLoanStartTime())).compareTo(new BigDecimal(companyLongLoanTime))<0){
+                    companyLongLoanMoney=companyLongLoanMoney.add(new BigDecimal(loanInfo.getLoanMoney()));
+                }
+
+            }
+        }
+        return companyShortLoanMoney.add(companyLongLoanMoney);
+
+    }
+
 }
