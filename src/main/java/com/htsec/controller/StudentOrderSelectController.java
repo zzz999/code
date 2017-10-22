@@ -119,14 +119,15 @@ public class StudentOrderSelectController {
         for(QYLongOrderBean qyLongOrderBean:process.getQyLongOrder().getLongOrders()){
            if( qyLongOrderBean.getOrderNum().equalsIgnoreCase(orderName)){
                BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
-              if(new BigDecimal(bankInfo.getCash()).compareTo(new BigDecimal( qyLongOrderBean.getLoanMoney()))<0){
+             /* if(new BigDecimal(bankInfo.getCash()).compareTo(new BigDecimal( qyLongOrderBean.getLoanMoney()))<0){
                   JSONObject result = new JSONObject();
                   result.put("result","false");
                   result.put("info","现金不足");
                   response.getWriter().write(result.toString());
               }else {
                   bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(qyLongOrderBean.getLoanMoney())).toString());
-              }
+              }*/
+               bankInfo.removeLoanCash(new BigDecimal(qyLongOrderBean.getLoanMoney()));
             }
         }
         if(process.getSelectedOrders().get(code)==null){
@@ -169,14 +170,15 @@ public class StudentOrderSelectController {
         for(QYShortOrderBean qyShortOrderBean:process.getQyShortOrder().getShortOrderBeans()){
             if( qyShortOrderBean.getOrderNum().equalsIgnoreCase(orderName)){
                 BankInfo bankInfo=StudentProcessManager.getBankInfoHashMap().get(code);
-                if(new BigDecimal(bankInfo.getCash()).compareTo(new BigDecimal( qyShortOrderBean.getLoanMoney()))<0){
+                /*if(new BigDecimal(bankInfo.getCash()).compareTo(new BigDecimal( qyShortOrderBean.getLoanMoney()))<0){
                     JSONObject result = new JSONObject();
                     result.put("result","false");
                     result.put("info","现金不足");
                     response.getWriter().write(result.toString());
                 }else {
                     bankInfo.setCash(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(qyShortOrderBean.getLoanMoney())).toString());
-                }
+                }*/
+                bankInfo.removeLoanCash(new BigDecimal(qyShortOrderBean.getLoanMoney()));
             }
         }
         if(process.getSelectedOrders().get(code)==null){
@@ -324,11 +326,15 @@ public class StudentOrderSelectController {
         bankInfo.removeLoanCash(StudentOrderManager.getCarLoanMoneyMap().get(time).get(code));
         bankInfo.removeLoanCash(StudentOrderManager.getOtherLoanMoneyMap().get(time).get(code));
         bankInfo.removeLoanCash(StudentOrderManager.getHouseLoanMoneyMap().get(time).get(code));
+
+        bankInfo.getCarLoanMap().put(time,StudentOrderManager.getCarLoanMoneyMap().get(time).get(code).toString());
+        bankInfo.getOtherLoanMap().put(time,StudentOrderManager.getOtherLoanMoneyMap().get(time).get(code).toString());
+        bankInfo.getHouseLoanMap().put(time,StudentOrderManager.getHouseLoanMoneyMap().get(time).get(code).toString());
+
         result.put("result","true");
         result.put("carMoney",StudentOrderManager.getCarLoanMoneyMap().get(time).get(code).toString());
         result.put("otherMoney",StudentOrderManager.getOtherLoanMoneyMap().get(time).get(code).toString());
         result.put("houseMoney",StudentOrderManager.getHouseLoanMoneyMap().get(time).get(code).toString());
-        //TODO 更新信息
         response.getWriter().write(result.toString());
 
         return;

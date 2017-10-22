@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.html.parser.Entity;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by bernard on 2017/9/26.
@@ -111,10 +113,15 @@ public class StudentQueryStateController {
     }
 
     /**
-     * 计算 企业贷款总额
+     * 计算
+     * 企业贷款	100%
+     住房按揭贷款	50%
+     其他消费贷款	100%
+     的风险加权资产
+
      */
 
-    private BigDecimal calcCompanyLoan(BankInfo bankInfo,String time){
+    private BigDecimal calcLoan(BankInfo bankInfo,String time){
         List<LoanInfo> loanInfoList=bankInfo.getLoanInfoList();
         if(loanInfoList ==null||loanInfoList.size()==0){
             return new BigDecimal("0");
@@ -126,6 +133,9 @@ public class StudentQueryStateController {
         String houseLoanTime=StudentInitManager.getLoanRule().getHouseLoanTime();
         BigDecimal companyShortLoanMoney = new BigDecimal("0");
         BigDecimal companyLongLoanMoney = new BigDecimal("0");
+        BigDecimal carLoanMoney =new BigDecimal("0");
+        BigDecimal houseLoanMoney =new BigDecimal("0");
+        BigDecimal otherLoanMoney = new BigDecimal("0");
         for(LoanInfo loanInfo:loanInfoList){
             if(loanInfo.getLoanType().equalsIgnoreCase("companyShortOrder")){
                 if(new BigDecimal(time).subtract(new BigDecimal(loanInfo.getLoanStartTime())).compareTo(new BigDecimal(companyShortLoanTime))<0){
@@ -140,8 +150,39 @@ public class StudentQueryStateController {
 
             }
         }
-        return companyShortLoanMoney.add(companyLongLoanMoney);
+
+        for(Map.Entry<String,String>entry:bankInfo.getHouseLoanMap().entrySet()){
+            if(new BigDecimal(time).subtract(new BigDecimal(entry.getKey())).compareTo(new BigDecimal(houseLoanTime))<0){
+                BigDecimal loanDuringTime= new BigDecimal(time).subtract( new BigDecimal(entry.getKey()));
+                BigDecimal loanRemainRate = new BigDecimal("1").subtract(loanDuringTime.multiply(new BigDecimal(StudentInitManager.getLoanRule().getHouseLoanReturn())));
+                houseLoanMoney=houseLoanMoney.add(new BigDecimal(entry.getValue()).multiply(loanRemainRate)).multiply(new BigDecimal("0.5"));
+            }
+        }
+        for(Map.Entry<String,String>entry:bankInfo.getOtherLoanMap().entrySet()){
+            if(new BigDecimal(time).subtract(new BigDecimal(entry.getKey())).compareTo(new BigDecimal(otherLoanTime))<0){
+                BigDecimal loanDuringTime= new BigDecimal(time).subtract( new BigDecimal(entry.getKey()));
+                BigDecimal loanRemainRate = new BigDecimal("1").subtract(loanDuringTime.multiply(new BigDecimal(StudentInitManager.getLoanRule().getOtherLoanReturn())));
+                otherLoanMoney=otherLoanMoney.add(new BigDecimal(entry.getValue()).multiply(loanRemainRate));
+            }
+        }
+
+        for(Map.Entry<String,String>entry:bankInfo.getCarLoanMap().entrySet()){
+            if(new BigDecimal(time).subtract(new BigDecimal(entry.getKey())).compareTo(new BigDecimal(carLoanTime))<0){
+                BigDecimal loanDuringTime= new BigDecimal(time).subtract( new BigDecimal(entry.getKey()));
+                BigDecimal loanRemainRate = new BigDecimal("1").subtract(loanDuringTime.multiply(new BigDecimal(StudentInitManager.getLoanRule().getOtherLoanReturn())));
+                carLoanMoney=carLoanMoney.add(new BigDecimal(entry.getValue()).multiply(loanRemainRate));
+            }
+        }
+        return companyShortLoanMoney.add(companyLongLoanMoney).add(carLoanMoney).add(houseLoanMoney).add(otherLoanMoney);
 
     }
+
+
+    /**
+     * 计算操作风险资本（个人存款、消费贷款）
+     */
+
+
+
 
 }
