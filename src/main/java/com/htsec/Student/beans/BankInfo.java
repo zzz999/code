@@ -12,6 +12,9 @@ import java.util.List;
 
 /**
  * Created by bernard on 2017/9/26.
+ *
+ * 盈余公积未计算过，需在年底结算时设置
+ * 专项风险准备取回 在企业评级的时候，如果以前是C级今年是B级，这时B级和C级的转向风险准备金的差值就是专项风险准备取回
  */
 public class BankInfo {
     private String name;
@@ -48,6 +51,7 @@ public class BankInfo {
     private HashMap<String,String> carLoanMap;//<time,carLoan>
     private HashMap<String,String> otherLoanMap;//<time,otherLoan>
     private HashMap<String,String> houseLoanMap;//<time,houseLoan>
+
     private HashMap<String,String> surplusPublicAccumulation; //<time,盈余公积>
 
 
