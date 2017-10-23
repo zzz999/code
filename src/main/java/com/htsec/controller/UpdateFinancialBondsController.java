@@ -197,7 +197,7 @@ public class UpdateFinancialBondsController {
         loanBlf.setEndTime((Integer.parseInt(time)+3)+"");
         loanBlf.setScale(sumScale.setScale(2,BigDecimal.ROUND_HALF_UP).toString());
         loanBlf.setMoney(sumMoney.setScale(2,BigDecimal.ROUND_HALF_UP).toString());
-        loanBankInfo.setCash(new BigDecimal(loanBankInfo.getCash()).add(new BigDecimal(loanBlf.getMoney()).multiply(new BigDecimal(0.9999))).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
+        loanBankInfo.setCash(new BigDecimal(loanBankInfo.getCash()).add(new BigDecimal(loanBlf.getMoney()).multiply(new BigDecimal(0.999))).setScale(2,BigDecimal.ROUND_HALF_UP).toString());
         StudentMessage sm = new StudentMessage(code, code, "1", loanBankInfo.getName() + "：结束金融债订单，订单金额为："+loanBlf.getMoney(), null);
         MessageManager.getList().add(sm);
         result.put("result", "true");

@@ -39,6 +39,8 @@ public class UpdateAgainLoanController {
         blf.setMoney(money);
         blf.setType("1");
         blf.setStartTime(time);
+        blf.setEndTime(time);
+        blf.setRate("3");
         BankLoanManager.getAgainLoanList().add(blf);
         result.put("result","true");
         response.getWriter().write(result.toString());

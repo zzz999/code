@@ -19,7 +19,6 @@ public class BankInfo {
     private QDInfo qdInfo;
     private List<DepositInfo> depositInfoList;
     private List<LoanInfo> loanInfoList;
-    private HashMap<String,PersonalDepositOrder> personalDepositOrderHashMap;
 
     private String cash; //现金
     private String freezeCash; //冻结的现金
@@ -72,7 +71,6 @@ public class BankInfo {
         this.carLoanMap = new HashMap<>();
         this.otherLoanMap = new HashMap<>();
         this.houseLoanMap = new HashMap<>();
-        this.personalDepositOrderHashMap=new HashMap<>();
     }
 
     public HashMap<String, String> getCarLoanMap() {

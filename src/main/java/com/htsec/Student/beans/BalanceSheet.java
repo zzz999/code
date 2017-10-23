@@ -42,11 +42,11 @@ public class BalanceSheet {
     //盈余公积
     private String surplusPublicAccumulation;
     //长期贷款
-    private String longTermLoan;
+    private String companyLongTermLoan;
     //当年未分配利润
     private String undistributedProfitsInTheSameYear;
     //短期贷款
-    private String shortTermLoan;
+    private String companyShortTermLoan;
     //一般风险准备
     private String generalRiskPreparedness;
     //应收款贴现
@@ -202,12 +202,20 @@ public class BalanceSheet {
         this.surplusPublicAccumulation = surplusPublicAccumulation;
     }
 
-    public String getLongTermLoan() {
-        return longTermLoan;
+    public String getCompanyLongTermLoan() {
+        return companyLongTermLoan;
     }
 
-    public void setLongTermLoan(String longTermLoan) {
-        this.longTermLoan = longTermLoan;
+    public void setCompanyLongTermLoan(String companyLongTermLoan) {
+        this.companyLongTermLoan = companyLongTermLoan;
+    }
+
+    public String getCompanyShortTermLoan() {
+        return companyShortTermLoan;
+    }
+
+    public void setCompanyShortTermLoan(String companyShortTermLoan) {
+        this.companyShortTermLoan = companyShortTermLoan;
     }
 
     public String getUndistributedProfitsInTheSameYear() {
@@ -216,14 +224,6 @@ public class BalanceSheet {
 
     public void setUndistributedProfitsInTheSameYear(String undistributedProfitsInTheSameYear) {
         this.undistributedProfitsInTheSameYear = undistributedProfitsInTheSameYear;
-    }
-
-    public String getShortTermLoan() {
-        return shortTermLoan;
-    }
-
-    public void setShortTermLoan(String shortTermLoan) {
-        this.shortTermLoan = shortTermLoan;
     }
 
     public String getGeneralRiskPreparedness() {
