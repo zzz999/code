@@ -1,5 +1,6 @@
 package com.htsec.controller;
 
+import com.amazonaws.services.xray.model.Http;
 import com.htsec.Student.process.StudentInitManager;
 import com.htsec.Student.process.StudentOrderManager;
 import com.htsec.Student.process.StudentProcessManager;
@@ -40,6 +41,21 @@ public class TeacherOrderProcessController {
             response.getWriter().write(result.toString());
             return;
         }
+    }
+
+    @RequestMapping(value="teacherQueryStudentOrder",method = RequestMethod.GET)
+    public void teacherQueryStudentOrder(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        String requestQueryString = request.getQueryString();
+        JSONObject requestJson = JSONObject.fromObject(CodeHelper.decode(requestQueryString));
+        String time=requestJson.getString("time");
+        JSONObject result = new JSONObject();
+        result.put("companyLoanOrder",StudentOrderManager.getCompanLoanOrderMap().get(time));
+        result.put("companyDepositOrder",StudentOrderManager.getCompanyDepositOrderMap().get(time));
+        result.put("personalDepositOrder",StudentOrderManager.getPersonalDepositOrderMap().get(time));
+        result.put("personalLoanOrder",StudentOrderManager.getPersonalLoanOrderMap().get(time));
+        response.getWriter().write(result.toString());
     }
 
     @RequestMapping(value = "/startPersonalDepositProcess", method = RequestMethod.GET)

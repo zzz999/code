@@ -2,8 +2,10 @@ package com.htsec.controller;
 
 import com.htsec.Student.beans.BankInfo;
 import com.htsec.Student.beans.BankLoanForm;
+import com.htsec.Student.init.bean.CountryDepositBean;
 import com.htsec.Student.process.BankLoanManager;
 import com.htsec.Student.process.StudentProcessManager;
+import com.htsec.Student.process.TeacherInitManager;
 import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSONObject;
 import org.apache.log4j.Logger;
@@ -43,7 +45,13 @@ public class UpdateNationalLoanController {
         blf.setLoanCode(code);
         blf.setMoney(money);
         blf.setType("2");
-        blf.setRate("4");
+        List<CountryDepositBean> list=TeacherInitManager.getContryDeposit().getCountryDepositBeanList();
+        for(CountryDepositBean cdb:list){
+            if(cdb.getTime().equals(time)){
+                blf.setRate(new BigDecimal(cdb.getRate().replaceAll("%","")).multiply(new BigDecimal(0.01)).toString());
+                break;
+            }
+        }
         blf.setStartTime(time);
         blf.setEndTime((Integer.parseInt(time) + 4) + "");
         JSONObject result = new JSONObject();

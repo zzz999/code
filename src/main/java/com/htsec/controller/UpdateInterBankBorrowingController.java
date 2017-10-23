@@ -75,6 +75,12 @@ public class UpdateInterBankBorrowingController {
             result.put("result","false");
         }else{
             BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
+            if (new BigDecimal(blf.getMoney()).compareTo(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(bankInfo.getFreezeCash()))) == 1) {
+                result.put("result", "false");
+                result.put("info", "现金不足！");
+                response.getWriter().write(result.toString());
+                return;
+            }
             BankInfo loanBankInfo= StudentProcessManager.getBankInfoHashMap().get(blf.getLoanCode());
             if(bankInfo==null){
                 result.put("result","false");

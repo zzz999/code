@@ -1,5 +1,6 @@
 package com.htsec.Student.beans;
 
+import com.htsec.Student.init.bean.TXOrderBean;
 import com.htsec.Student.process.StudentInitManager;
 import com.htsec.Student.process.TeacherInitManager;
 import org.jcodings.util.Hash;
@@ -18,6 +19,7 @@ public class BankInfo {
     private QDInfo qdInfo;
     private List<DepositInfo> depositInfoList;
     private List<LoanInfo> loanInfoList;
+    private HashMap<String,PersonalDepositOrder> personalDepositOrderHashMap;
 
     private String cash; //现金
     private String freezeCash; //冻结的现金
@@ -39,11 +41,14 @@ public class BankInfo {
     private List<BankLoanForm> nationalLoanList;//国债
     private List<BankLoanForm> interBankBorrowingList;//同业拆借
     private List<BankLoanForm> financialBondsList;//金融债
+    private List<TXOrderBean> txOrderBeanList; //贴现订单
     private HashMap<String,String> newIncreaseDepositMap;//<time,新增存款总额>
     private HashMap<String,String> totalDepositMap;//<time,存款总额>
     private HashMap<String,String> totalLoanMap;//<time,贷款总额>
     private HashMap<String,String> newIncreaseLoanMap;//<time,存款>
-
+    private HashMap<String,String> carLoanMap;//<time,carLoan>
+    private HashMap<String,String> otherLoanMap;//<time,otherLoan>
+    private HashMap<String,String> houseLoanMap;//<time,houseLoan>
 
 
     public BankInfo() {
@@ -64,6 +69,34 @@ public class BankInfo {
         this.qdInfo = new QDInfo();
         this.totalLoanMap = new HashMap<>();
         this.newIncreaseLoanMap = new HashMap<>();
+        this.carLoanMap = new HashMap<>();
+        this.otherLoanMap = new HashMap<>();
+        this.houseLoanMap = new HashMap<>();
+        this.personalDepositOrderHashMap=new HashMap<>();
+    }
+
+    public HashMap<String, String> getCarLoanMap() {
+        return carLoanMap;
+    }
+
+    public void setCarLoanMap(HashMap<String, String> carLoanMap) {
+        this.carLoanMap = carLoanMap;
+    }
+
+    public HashMap<String, String> getOtherLoanMap() {
+        return otherLoanMap;
+    }
+
+    public void setOtherLoanMap(HashMap<String, String> otherLoanMap) {
+        this.otherLoanMap = otherLoanMap;
+    }
+
+    public HashMap<String, String> getHouseLoanMap() {
+        return houseLoanMap;
+    }
+
+    public void setHouseLoanMap(HashMap<String, String> houseLoanMap) {
+        this.houseLoanMap = houseLoanMap;
     }
 
     public String getCash() {
@@ -267,20 +300,27 @@ public class BankInfo {
         this.newIncreaseLoanMap = newIncreaseLoanMap;
     }
 
+    public List<TXOrderBean> getTxOrderBeanList() {
+        return txOrderBeanList;
+    }
+
+    public void setTxOrderBeanList(List<TXOrderBean> txOrderBeanList) {
+        this.txOrderBeanList = txOrderBeanList;
+    }
+
     public void addDepositCash(BigDecimal addmoney, String year){
         BigDecimal maxDepositMoney = new BigDecimal("0");
         List<ZHInfo> listZH = this.zhInfoList.get(0).getZhInfoList();
         if(listZH ==null){
             return;
         }
-        for(ZHInfo zhInfo:listZH){
-            if(zhInfo.getGroupInfo()!=null&&zhInfo.getGroupInfo().getDepositGroup()!=null
+        for(ZHInfo zhInfo:listZH){            if(zhInfo.getGroupInfo()!=null&&zhInfo.getGroupInfo().getDepositGroup()!=null
                     &&zhInfo.getGroupInfo().getDepositGroup().getDepositGroupBuiltTime()!=null
                     &&zhInfo.getGroupInfo().getDepositGroup().getDepositGroupBuiltTime()!=""
                     ){
                 int groupBuiltTime=Integer.parseInt(zhInfo.getGroupInfo().getDepositGroup().getDepositGroupBuiltTime());
                 if(groupBuiltTime!=0){
-                    maxDepositMoney.add(new BigDecimal(StudentInitManager.getGroupBuildRule().getDepositGroupIncrease()));
+                    maxDepositMoney=maxDepositMoney.add(new BigDecimal(StudentInitManager.getGroupBuildRule().getDepositGroupIncrease()));
                 }
             }
 
