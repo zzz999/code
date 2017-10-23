@@ -53,7 +53,7 @@ public class UpdateNationalLoanController {
             }
         }
         blf.setStartTime(time);
-        blf.setEndTime((Integer.parseInt(time) + 4) + "");
+        blf.setEndTime((Integer.parseInt(time) + 3) + "");
         JSONObject result = new JSONObject();
 
         if (new BigDecimal(blf.getMoney()).compareTo(new BigDecimal(bankInfo.getCash()).subtract(new BigDecimal(bankInfo.getFreezeCash()))) == 1) {

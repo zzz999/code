@@ -1,9 +1,11 @@
 package com.htsec.controller;
 
-import com.htsec.Student.beans.BankInfo;
-import com.htsec.Student.beans.BankLoanForm;
-import com.htsec.Student.beans.StudentMessage;
+import com.htsec.Student.beans.*;
+import com.htsec.Student.init.bean.DepositRule;
+import com.htsec.Student.init.bean.LoanRule;
 import com.htsec.Student.process.MessageManager;
+import com.htsec.Student.process.StudentInitManager;
+import com.htsec.Student.process.StudentOrderManager;
 import com.htsec.Student.process.StudentProcessManager;
 import com.htsec.commons.utils.CodeHelper;
 import net.sf.json.JSONObject;
@@ -151,8 +153,81 @@ public class StudentLoginController {
         String requestQueryString = CodeHelper.decode(request.getQueryString());
         JSONObject requestJson = JSONObject.fromObject(requestQueryString);
         String code = requestJson.getString("code");
+        BankInfo bankInfo = StudentProcessManager.getBankInfoHashMap().get(code);
         JSONObject result = new JSONObject();
         result.put("info", StudentProcessManager.getBankInfoHashMap().get(code));
+        result.put("txOrderBeanList",bankInfo.getTxOrderBeanList());
+        int curTime=Integer.parseInt(bankInfo.getTime());
+        LoanRule loanRule = StudentInitManager.getLoanRule();
+        DepositRule depositRule = StudentInitManager.getDepositRule();
+        List<JSONObject> loanList=new ArrayList<>();
+        for(int i=1;i<=curTime;i++){
+            PersonalLoanOrder forPlOrder = StudentOrderManager.getPersonalLoanOrderMap().get(bankInfo.getTime()).get(code);
+            if (curTime <= i + Integer.parseInt(loanRule.getHouseLoanTime()) - 1) {
+                JSONObject house=new JSONObject();
+                house.put("money",bankInfo.getHouseLoanMap().get(i));
+                house.put("startTime",i);
+                house.put("type","个人房贷");
+                house.put("endTime",i+Integer.parseInt(loanRule.getHouseLoanTime())-1);
+                loanList.add(house);
+            }
+            if (curTime <= i + Integer.parseInt(loanRule.getCarLoanTime()) - 1) {
+                JSONObject car=new JSONObject();
+                car.put("money",bankInfo.getCarLoanMap().get(i));
+                car.put("startTime",i);
+                car.put("type","个人车贷");
+                car.put("endTime",i+Integer.parseInt(loanRule.getHouseLoanTime())-1);
+                loanList.add(car);
+            }
+            if (curTime <= i + Integer.parseInt(loanRule.getOtherLoanTime()) - 1) {
+                JSONObject other=new JSONObject();
+                other.put("money",bankInfo.getOtherLoanMap().get(i));
+                other.put("startTime",i);
+                other.put("type","个人其他贷款");
+                other.put("endTime",i+Integer.parseInt(loanRule.getHouseLoanTime())-1);
+                loanList.add(other);
+            }
+        }
+        List<LoanInfo> loanInfoList = bankInfo.getLoanInfoList();
+        for (LoanInfo loanInfo : loanInfoList) {
+            String companyLoanRuleTime,type;
+            if (loanInfo.getQyShortOrderBean() != null) {
+                companyLoanRuleTime = loanRule.getCompanyShortLoanTime();
+                type="企业短贷";
+            } else {
+                companyLoanRuleTime = loanRule.getCompanyLongLoanTime();
+                type="企业长贷";
+            }
+            if (curTime <= Integer.parseInt(loanInfo.getLoanStartTime()) + Integer.parseInt(companyLoanRuleTime) - 1) {
+                JSONObject companyLoan=new JSONObject();
+                companyLoan.put("money",loanInfo.getLoanMoney());
+                companyLoan.put("startTime",loanInfo.getLoanStartTime());
+                companyLoan.put("type",type);
+                companyLoan.put("endTime",Integer.parseInt(loanInfo.getLoanStartTime())+Integer.parseInt(companyLoanRuleTime)-1);
+                loanList.add(companyLoan);
+            }
+        }
+        result.put("loanList",loanList);
+        List<JSONObject> depositList=new ArrayList<>();
+        for (int i = 1; i <= curTime; i++) {
+            if (curTime <= i + Integer.parseInt(depositRule.getPersionalDepositTime()) - 1) {
+                JSONObject personalDeposit=new JSONObject();
+                personalDeposit.put("money",StudentOrderManager.getPersonalDepositMoneyMap().get(i).get(code));
+                personalDeposit.put("startTime",i);
+                personalDeposit.put("type","个人存款");
+                personalDeposit.put("endTime",i+Integer.parseInt(depositRule.getPersionalDepositTime())-1);
+                depositList.add(personalDeposit);
+            }
+            if (curTime <= i + Integer.parseInt(depositRule.getCompanyDepositTime()) - 1) {
+                JSONObject companyDeposit=new JSONObject();
+                companyDeposit.put("money",StudentOrderManager.getCompanyDepositMoneyMap().get(i).get(code));
+                companyDeposit.put("startTime",i);
+                companyDeposit.put("type","企业存款");
+                companyDeposit.put("endTime",i+Integer.parseInt(depositRule.getCompanyDepositTime())-1);
+                depositList.add(companyDeposit);
+            }
+        }
+        result.put("depositList",depositList);
         try {
             response.getWriter().write(result.toString());
         } catch (IOException e) {

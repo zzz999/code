@@ -52,7 +52,7 @@ public class UpdateInterBankBorrowingController {
         blf.setRate(rate);
         blf.setType("4");
         blf.setStartTime(time);
-        blf.setEndTime((1+Integer.parseInt(time))+"");
+        blf.setEndTime(time);
         BankLoanManager.getInterBankBorrowingList().add(blf);
         StudentMessage sm=new StudentMessage(code,buyCode,"4",bankInfo.getName()+"：请求"+buyBankInfo.getName()+"同业拆借额度为"+money+"，利率为"+rate+"%，时间为1年",blf.getId());
         MessageManager.getList().add(sm);

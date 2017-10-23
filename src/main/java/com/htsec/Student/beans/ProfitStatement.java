@@ -1,5 +1,7 @@
 package com.htsec.Student.beans;
 
+import java.math.BigDecimal;
+
 /**
  * Created by zzz on 2017/10/22.
  * 利润表
@@ -39,6 +41,35 @@ public class ProfitStatement {
     private String specialRiskPreparation;
     //所得税
     private String incomeTax;
+    //净利润
+    private String netProfit;
+    public void calcNetProfit(){
+        BigDecimal result=new BigDecimal(interestIncomeFromConsumerLoans);
+        result=result.add(new BigDecimal(interestIncomeFromShortCompanyLoans));
+        result=result.add(new BigDecimal(interestIncomeFromLongCompanyLoans));
+        result=result.add(new BigDecimal(discountInterestIncome));
+        result=result.add(new BigDecimal(interestIncomeFromInterbankLending));
+        result=result.add(new BigDecimal(intermediateBusinessIncome));
+        result=result.add(new BigDecimal(investIncome));
+        result=result.subtract(new BigDecimal(interestExpenseOnPersonalDeposits));
+        result=result.subtract(new BigDecimal(interestExpenseOnCompanyDeposits));
+        result=result.subtract(new BigDecimal(interbankInterestExpense));
+        result=result.subtract(new BigDecimal(interestExpenseOnReLending));
+        result=result.subtract(new BigDecimal(commissionExpense));
+        result=result.subtract(new BigDecimal(comprehensiveExpenditure));
+        result=result.add(new BigDecimal(nonOperatingIncome));
+        result=result.subtract(new BigDecimal(nonOperatingExpenses));
+        result=result.subtract(new BigDecimal(incomeTax));
+        netProfit=result.toString();
+    }
+
+    public String getNetProfit() {
+        return netProfit;
+    }
+
+    public void setNetProfit(String netProfit) {
+        this.netProfit = netProfit;
+    }
 
     public String getInterestIncomeFromConsumerLoans() {
         return interestIncomeFromConsumerLoans;

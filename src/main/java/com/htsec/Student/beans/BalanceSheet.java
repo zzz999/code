@@ -35,6 +35,8 @@ public class BalanceSheet {
     private String carLoan;
     //综合消费贷款
     private String otherLoan;
+    //负债合计
+    private String totalLiabilities;
     //实收资本
     private String paidIinCapital;
     //企业贷款小计
@@ -264,5 +266,13 @@ public class BalanceSheet {
 
     public void setTotalLiabilitiesAndOwnersEquity(String totalLiabilitiesAndOwnersEquity) {
         this.totalLiabilitiesAndOwnersEquity = totalLiabilitiesAndOwnersEquity;
+    }
+
+    public String getTotalLiabilities() {
+        return totalLiabilities;
+    }
+
+    public void setTotalLiabilities(String totalLiabilities) {
+        this.totalLiabilities = totalLiabilities;
     }
 }

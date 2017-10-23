@@ -48,6 +48,7 @@ public class BankInfo {
     private HashMap<String,String> carLoanMap;//<time,carLoan>
     private HashMap<String,String> otherLoanMap;//<time,otherLoan>
     private HashMap<String,String> houseLoanMap;//<time,houseLoan>
+    private HashMap<String,String> surplusPublicAccumulation; //<time,盈余公积>
 
 
     public BankInfo() {
@@ -208,6 +209,14 @@ public class BankInfo {
 
     public void setFreezeCash(String freezeCash) {
         this.freezeCash = freezeCash;
+    }
+
+    public HashMap<String, String> getSurplusPublicAccumulation() {
+        return surplusPublicAccumulation;
+    }
+
+    public void setSurplusPublicAccumulation(HashMap<String, String> surplusPublicAccumulation) {
+        this.surplusPublicAccumulation = surplusPublicAccumulation;
     }
 
     public HashMap<String, String> getNewIncreaseDepositMap() {

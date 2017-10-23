@@ -168,7 +168,7 @@ public class UpdateFinancialBondsController {
             BankLoanManager.getFinancialBondsList().remove(blf);
             blf.setAudit(true);
             blf.setStartTime(time);
-            blf.setEndTime((Integer.parseInt(time)+3)+"");
+            blf.setEndTime((Integer.parseInt(time)+2)+"");
             resultList.add(blf);
             StudentMessage sm;
             if(sumTemp.compareTo(count)==1){
@@ -194,7 +194,7 @@ public class UpdateFinancialBondsController {
         }
         loanBlf.setAudit(true);
         loanBlf.setStartTime(time);
-        loanBlf.setEndTime((Integer.parseInt(time)+3)+"");
+        loanBlf.setEndTime((Integer.parseInt(time)+2)+"");
         loanBlf.setScale(sumScale.setScale(2,BigDecimal.ROUND_HALF_UP).toString());
         loanBlf.setMoney(sumMoney.setScale(2,BigDecimal.ROUND_HALF_UP).toString());
         loanBankInfo.setCash(new BigDecimal(loanBankInfo.getCash()).add(new BigDecimal(loanBlf.getMoney()).multiply(new BigDecimal(0.999))).setScale(2,BigDecimal.ROUND_HALF_UP).toString());

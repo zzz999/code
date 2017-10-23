@@ -5,6 +5,7 @@ import com.htsec.Student.init.bean.*;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zzz on 2017/10/22.
@@ -79,15 +80,15 @@ public class FinancialStatementsManager {
         BigDecimal intermediateBusinessIncome = new BigDecimal(0);
         int curTime = Integer.parseInt(time);
         for (int i = 1; i <= curTime; i++) {
-            PersonalLoanOrder forPlOrder = StudentOrderManager.getPersonalLoanOrderMap().get(time).get(code);
+            PersonalLoanOrder forPlOrder = StudentOrderManager.getPersonalLoanOrderMap().get(i).get(code);
             if (curTime <= i + Integer.parseInt(loanRule.getHouseLoanTime()) - 1) {
-                interestIncomeFromConsumerLoans = interestIncomeFromConsumerLoans.add(new BigDecimal(bankInfo.getHouseLoanMap().get(time)).multiply(new BigDecimal(forPlOrder.getHouseLoanRate())));
+                interestIncomeFromConsumerLoans = interestIncomeFromConsumerLoans.add(new BigDecimal(bankInfo.getHouseLoanMap().get(i)).multiply(new BigDecimal(forPlOrder.getHouseLoanRate())));
             }
             if (curTime <= i + Integer.parseInt(loanRule.getCarLoanTime()) - 1) {
-                interestIncomeFromConsumerLoans = interestIncomeFromConsumerLoans.add(new BigDecimal(bankInfo.getCarLoanMap().get(time)).multiply(new BigDecimal(forPlOrder.getCarLoanRate())));
+                interestIncomeFromConsumerLoans = interestIncomeFromConsumerLoans.add(new BigDecimal(bankInfo.getCarLoanMap().get(i)).multiply(new BigDecimal(forPlOrder.getCarLoanRate())));
             }
             if (curTime <= i + Integer.parseInt(loanRule.getOtherLoanTime()) - 1) {
-                interestIncomeFromConsumerLoans = interestIncomeFromConsumerLoans.add(new BigDecimal(bankInfo.getOtherLoanMap().get(time)).multiply(new BigDecimal(forPlOrder.getOtherLoanRate())));
+                interestIncomeFromConsumerLoans = interestIncomeFromConsumerLoans.add(new BigDecimal(bankInfo.getOtherLoanMap().get(i)).multiply(new BigDecimal(forPlOrder.getOtherLoanRate())));
             }
         }
         List<LoanInfo> loanInfoList = bankInfo.getLoanInfoList();
@@ -119,7 +120,6 @@ public class FinancialStatementsManager {
         ps.setInterestIncomeFromConsumerLoans(interestIncomeFromConsumerLoans.toString());
         ps.setInterestIncomeFromShortCompanyLoans(interestIncomeFromShortCompanyLoans.toString());
         ps.setInterestIncomeFromLongCompanyLoans(interestIncomeFromLongCompanyLoans.toString());
-
         BigDecimal discountInterestIncome = new BigDecimal(0);
         List<TXOrderBean> txOrderBeans = bankInfo.getTxOrderBeanList();
         for (TXOrderBean txOrderBean : txOrderBeans) {
@@ -174,13 +174,13 @@ public class FinancialStatementsManager {
         BigDecimal interestExpenseOnCompanyDeposits = new BigDecimal(0);
         DepositRule depositRule = StudentInitManager.getDepositRule();
         for (int i = 1; i <= curTime; i++) {
-            PersonalDepositOrder pdo = StudentOrderManager.getPersonalDepositOrderMap().get(time).get(code);
+            PersonalDepositOrder pdo = StudentOrderManager.getPersonalDepositOrderMap().get(i).get(code);
             if (curTime <= i + Integer.parseInt(depositRule.getPersionalDepositTime()) - 1) {
-                interestExpenseOnPersonalDeposits = interestExpenseOnPersonalDeposits.add(StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code).multiply(new BigDecimal(pdo.getOrderRate())));
+                interestExpenseOnPersonalDeposits = interestExpenseOnPersonalDeposits.add(StudentOrderManager.getPersonalDepositMoneyMap().get(i).get(code).multiply(new BigDecimal(pdo.getOrderRate())));
             }
-            CompanyDepositOrder cdo = StudentOrderManager.getCompanyDepositOrderMap().get(time).get(code);
+            CompanyDepositOrder cdo = StudentOrderManager.getCompanyDepositOrderMap().get(i).get(code);
             if (curTime <= i + Integer.parseInt(depositRule.getCompanyDepositTime()) - 1) {
-                interestExpenseOnCompanyDeposits = interestExpenseOnCompanyDeposits.add(StudentOrderManager.getCompanyDepositMoneyMap().get(time).get(code).multiply(new BigDecimal(cdo.getCompanyDepositRate())));
+                interestExpenseOnCompanyDeposits = interestExpenseOnCompanyDeposits.add(StudentOrderManager.getCompanyDepositMoneyMap().get(i).get(code).multiply(new BigDecimal(cdo.getCompanyDepositRate())));
             }
         }
         ps.setInterestExpenseOnPersonalDeposits(interestExpenseOnPersonalDeposits.toString());
@@ -214,6 +214,8 @@ public class FinancialStatementsManager {
         ps.setSpecialRiskPreparation(specialRiskPreparation.toString());
         BigDecimal incomeTax = new BigDecimal(0);
         ps.setIncomeTax(incomeTax.toString());
+        ps.setNonOperatingExpenses("0");
+        ps.calcNetProfit();
         fs.setProfitStatement(ps);
 
         BalanceSheet bs = new BalanceSheet();
@@ -222,7 +224,7 @@ public class FinancialStatementsManager {
         BigDecimal companyDeposit = new BigDecimal(0);
         for (int i = 1; i <= curTime; i++) {
             if (curTime <= i + Integer.parseInt(depositRule.getPersionalDepositTime()) - 1) {
-                personalDeposit = personalDeposit.add(StudentOrderManager.getPersonalDepositMoneyMap().get(time).get(code).multiply(
+                personalDeposit = personalDeposit.add(StudentOrderManager.getPersonalDepositMoneyMap().get(i).get(code).multiply(
                         new BigDecimal(1).subtract(
                                 new BigDecimal(depositRule.getPersionalDepositAnnualReturn().replaceAll("%", ""))
                                         .divide(new BigDecimal(100), 8, BigDecimal.ROUND_HALF_UP)
@@ -231,7 +233,7 @@ public class FinancialStatementsManager {
                 ));
             }
             if (curTime <= i + Integer.parseInt(depositRule.getCompanyDepositTime()) - 1) {
-                companyDeposit = companyDeposit.add(StudentOrderManager.getCompanyDepositMoneyMap().get(time).get(code).multiply(
+                companyDeposit = companyDeposit.add(StudentOrderManager.getCompanyDepositMoneyMap().get(i).get(code).multiply(
                         new BigDecimal(1).subtract(
                                 new BigDecimal(depositRule.getCompanyDepositAnnualReturn().replaceAll("%", ""))
                                         .divide(new BigDecimal(100), 8, BigDecimal.ROUND_HALF_UP)
@@ -291,7 +293,7 @@ public class FinancialStatementsManager {
         for (int i = 1; i <= curTime; i++) {
             if (curTime <= i + Integer.parseInt(loanRule.getHouseLoanTime()) - 1) {
                 houseLoanMoney=houseLoanMoney.add(
-                        new BigDecimal(bankInfo.getHouseLoanMap().get(time)).multiply(
+                        new BigDecimal(bankInfo.getHouseLoanMap().get(i)).multiply(
                             new BigDecimal(1).subtract(
                                 new BigDecimal(loanRule.getHouseLoanReturn().replaceAll("%", ""))
                                         .divide(new BigDecimal(100), 8, BigDecimal.ROUND_HALF_UP)
@@ -302,7 +304,7 @@ public class FinancialStatementsManager {
             }
             if (curTime <= i + Integer.parseInt(loanRule.getCarLoanTime()) - 1) {
                 carLoanMoney=carLoanMoney.add(
-                        new BigDecimal(bankInfo.getCarLoanMap().get(time)).multiply(
+                        new BigDecimal(bankInfo.getCarLoanMap().get(i)).multiply(
                                 new BigDecimal(1).subtract(
                                         new BigDecimal(loanRule.getCarLoanReturn().replaceAll("%", ""))
                                                 .divide(new BigDecimal(100), 8, BigDecimal.ROUND_HALF_UP)
@@ -313,7 +315,7 @@ public class FinancialStatementsManager {
             }
             if (curTime <= i + Integer.parseInt(loanRule.getOtherLoanTime()) - 1) {
                 otherLoanMoney=carLoanMoney.add(
-                        new BigDecimal(bankInfo.getOtherLoanMap().get(time)).multiply(
+                        new BigDecimal(bankInfo.getOtherLoanMap().get(i)).multiply(
                                 new BigDecimal(1).subtract(
                                         new BigDecimal(loanRule.getOtherLoanReturn().replaceAll("%", ""))
                                                 .divide(new BigDecimal(100), 8, BigDecimal.ROUND_HALF_UP)
@@ -340,8 +342,10 @@ public class FinancialStatementsManager {
         bs.setHouseLoan(houseLoanMoney.toString());
         bs.setCarLoan(carLoanMoney.toString());
         bs.setOtherLoan(otherLoanMoney.toString());
+        bs.setTotalConsumerLoans(new BigDecimal(bs.getHouseLoan()).add(new BigDecimal(bs.getCarLoan())).add(new BigDecimal(bs.getOtherLoan())).toString());
         bs.setCompanyLongTermLoan(companyLongLoanMoney.toString());
         bs.setCompanyShortTermLoan(companyShortLoanMoney.toString());
+        bs.setCompanyLoanSubtotal(new BigDecimal(bs.getCompanyLongTermLoan()).add(new BigDecimal(bs.getCompanyShortTermLoan())).toString());
         List<TXOrderBean> txOrderBeanList=bankInfo.getTxOrderBeanList();
         BigDecimal accountReceivableDiscount=new BigDecimal(0);
         for(TXOrderBean txOrderBean:txOrderBeanList){
@@ -350,7 +354,31 @@ public class FinancialStatementsManager {
             }
         }
         bs.setAccountReceivableDiscount(accountReceivableDiscount.toString());
+        BigDecimal surplusPublicAccumulation=new BigDecimal(0);
+        for(Map.Entry<String,String> entry:bankInfo.getSurplusPublicAccumulation().entrySet()){
+            surplusPublicAccumulation=surplusPublicAccumulation.add(new BigDecimal(bankInfo.getSurplusPublicAccumulation().get(entry.getKey())));
+        }
+        bs.setSurplusPublicAccumulation(surplusPublicAccumulation.toString());
+        bs.setTotalLiabilities(new BigDecimal(bs.getAgainLoan()).add(new BigDecimal(bs.getInterbankBorrowing())).add(new BigDecimal(bs.getFinancialBondsIssue())).toString());
+        bs.setPaidIinCapital("5000");
+        bs.setUndistributedProfitsInTheSameYear(ps.getNetProfit());
+        bs.setGeneralRiskPreparedness(new BigDecimal(bs.getTotalConsumerLoans()).add(new BigDecimal(bs.getCompanyLoanSubtotal())).add(new BigDecimal(bs.getInterbankLending())).add(new BigDecimal(bs.getFinancialBondsIssue())).multiply(new BigDecimal(0.01)).toString());
+        bs.setTotalOwnersEquity(new BigDecimal(bs.getPaidIinCapital())
+                .add(new BigDecimal(bs.getSurplusPublicAccumulation()))
+                .add(new BigDecimal(bs.getUndistributedProfitsInTheSameYear()))
+                .add(new BigDecimal(bs.getGeneralRiskPreparedness()))
+                .toString());
+        bs.setTotalLiabilitiesAndOwnersEquity(new BigDecimal(bs.getTotalLiabilities()).add(new BigDecimal(bs.getTotalOwnersEquity())).toString());
+        bs.setTotalAssets(new BigDecimal(bs.getCash())
+                .add(new BigDecimal(bs.getReserveAgainstDeposit()))
+                .add(new BigDecimal(bs.getInterbankLending()))
+                .add(new BigDecimal(bs.getNationalLoan()))
+                .add(new BigDecimal(bs.getInvestmentInFinancialBonds()))
+                .add(new BigDecimal(bs.getTotalConsumerLoans()))
+                .add(new BigDecimal(bs.getCompanyLoanSubtotal()))
+                .toString());
         fs.setBalanceSheet(bs);
+
         return fs;
     }
 }
