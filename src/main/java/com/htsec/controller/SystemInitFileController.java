@@ -64,6 +64,7 @@ public class SystemInitFileController {
         initCarLoan(file);
         initOtherLoan(file);
         initContryDep(file);
+        initCompanyDeposit(file);
         TeacherInitManager.getContryDeposit();
         TeacherInitManager.getOtherLoan();
         TeacherInitManager.getCarLoan();
@@ -405,6 +406,12 @@ private void initMarketingBuildRule(MultipartFile file) throws  IOException{
                 if(col ==5){
                     txOrderBean.setZQ(cell.trim());
                 }
+                if(col==6){
+                    txOrderBean.setRate(cell.trim());
+                }
+                if(col==7){
+                    txOrderBean.setQYname(cell.trim());
+                }
                 col++;
             }
             if(TeacherInitManager.getTxOrder()==null){
@@ -447,6 +454,41 @@ private void initMarketingBuildRule(MultipartFile file) throws  IOException{
                 TeacherInitManager.setPersonalDeposit(new PersonalDeposit());
             }
             TeacherInitManager.getPersonalDeposit().getPersonalDepositBeanList().add(personalDepositBean);
+
+        }
+    }
+
+    /**
+     * 初始化公司存款
+     * @param file
+     * @throws IOException
+     */
+    private void initCompanyDeposit(MultipartFile file) throws IOException{
+        ArrayList<ArrayList<String>> companyDepositInfo=ExcelUtil.testReadExcel(file.getInputStream(), 9,file.getName());//个人存款
+        int lineNum=0;
+        // ArrayList<String> timeList =null;
+        for(ArrayList<String> line:companyDepositInfo){
+            lineNum++;
+            if(lineNum==1){
+                //timeList =line;
+                continue;
+            }
+            int col =0;
+            CompanyDepositBean companyDepositBean = new CompanyDepositBean();
+            for(String cell:line){
+                if(col ==0){
+                    companyDepositBean.setTime(cell.trim());
+                }
+                if(col ==1){
+                    companyDepositBean.setSum(cell.trim());
+                }
+                col++;
+
+            }
+            if(TeacherInitManager.getCompanyDeposit()==null){
+                TeacherInitManager.setCompanyDeposit(new CompanyDeposit());
+            }
+            TeacherInitManager.getCompanyDeposit().getCompanyDepositBeanList().add(companyDepositBean);
 
         }
     }

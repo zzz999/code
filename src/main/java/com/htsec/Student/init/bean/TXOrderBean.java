@@ -7,7 +7,9 @@ public class TXOrderBean {
     private String orderMoney;
     private String TXtime;
     private String ZQ;
-
+    private String rate;
+    private String QYname;
+    private Boolean audit=false;
     public String getNum() {
         return num;
     }
@@ -52,8 +54,32 @@ public class TXOrderBean {
         return ZQ;
     }
 
+    public String getRate() {
+        return rate;
+    }
+
+    public void setRate(String rate) {
+        this.rate = rate;
+    }
+
     public void setZQ(String ZQ) {
         this.ZQ = ZQ;
+    }
+
+    public String getQYname() {
+        return QYname;
+    }
+
+    public void setQYname(String QYname) {
+        this.QYname = QYname;
+    }
+
+    public Boolean getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Boolean audit) {
+        this.audit = audit;
     }
 
     @Override

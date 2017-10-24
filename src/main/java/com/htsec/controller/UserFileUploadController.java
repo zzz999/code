@@ -1,5 +1,10 @@
 package com.htsec.controller;
 
+import com.htsec.Student.beans.BankInfo;
+import com.htsec.Student.beans.StudentMessage;
+import com.htsec.Student.process.MessageManager;
+import com.htsec.Student.process.StudentProcessManager;
+import net.sf.json.JSONObject;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,15 +31,25 @@ public class UserFileUploadController {
      */
     @RequestMapping(value= "/fileupload",method= RequestMethod.POST)
     @ResponseBody
-    public String upload(MultipartFile file, HttpServletRequest request) throws IOException {
+    public String upload(MultipartFile file, HttpServletRequest request) throws Exception {
         String path = request.getSession().getServletContext().getRealPath("upload");
-        String fileName = file.getOriginalFilename();
+        ;
+        String fileName = "file_"+MessageManager.getRandomString(10)+"_"+file.getOriginalFilename();
         File dir = new File(path,fileName);
         if(!dir.exists()){
             dir.mkdirs();
         }
         //MultipartFile自带的解析方法
         file.transferTo(dir);
+        String code=request.getParameter("code");
+        String sendCode=request.getParameter("sendCode");
+        BankInfo bankInfo= StudentProcessManager.getBankInfoHashMap().get(code);
+        if(bankInfo==null){
+            throw new Exception("没有对应银行信息");
+        }
+        StudentMessage sm=new StudentMessage(code,sendCode,"2",file.getOriginalFilename(),fileName);
+        sm.setMessage(bankInfo.getName());
+        MessageManager.getList().add(sm);
         return "ok!";
     }
 
@@ -46,12 +61,13 @@ public class UserFileUploadController {
      */
     @RequestMapping("/filedownload")
     public void down(HttpServletRequest request,HttpServletResponse response) throws Exception{
+        String file=request.getParameter("file");
         //模拟文件，myfile.txt为需要下载的文件
-        String fileName = request.getSession().getServletContext().getRealPath("upload")+"/1.xlsx";
+        String fileName = request.getSession().getServletContext().getRealPath("upload")+"/"+file;
         //获取输入流
         InputStream bis = new BufferedInputStream(new FileInputStream(new File(fileName)));
         //假如以中文名下载的话
-        String filename = "下载文件.txt";
+        String filename = file.substring(16);
         //转码，免得文件名中文乱码
         filename = URLEncoder.encode(filename,"UTF-8");
         //设置文件下载头
